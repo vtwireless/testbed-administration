@@ -1,0 +1,5 @@
+---
+- hosts: routers
+  become: yes
+  roles:
+    - router_firewall
