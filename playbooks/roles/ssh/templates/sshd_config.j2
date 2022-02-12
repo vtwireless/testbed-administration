@@ -1,0 +1,35 @@
+# sshd config, anything not listed here are defaults
+# see https://man.openbsd.org/sshd_config and https://www.ssh.com/academy/ssh/sshd_config for more info
+# listen only on ipv4, as ipv6 is not accounted for yet
+AddressFamily inet
+
+# listen only on the local network
+{# get the local network from vars #}
+ListenAddress {{ lan_subnet }}.0.0/24
+
+# override to prevent legacy folder beinmg supported
+AuthorizedKeysFile .ssh/authorized_keys
+
+# no passwords
+{# I have a few choice words for anyone who dares change this one #}
+PasswordAuthentication no
+
+# we just don't need this
+X11Forwarding no
+
+# we don't want any forwarding, tunneling, etc...
+AllowStreamLocalForwarding no
+GatewayPorts no
+PermitTunnel no
+AllowTcpForwarding no
+AllowAgentForwarding no
+
+# no root login, must use sudo
+PermitRootLogin forced-commands-only
+
+# overkill encryption settings, could probably tone it down if you wanted to for compat 
+Ciphers aes256-gcm@openssh.com
+{#use sk-ssh-ed25519 for yubikeys#}
+HostKeyAlgorithms ecdsa-sha2-nistp521, ssh-ed25519, ssh-ed25519-cert-v01@openssh.com, ecdsa-sha2-nistp521-cert-v01@openssh.com, sk-ssh-ed25519-cert-v01@openssh.com
+KexAlgorithms ecdh-sha2-nistp521, curve25519-sha256
+MACs umac-128-etm@openssh.com, hmac-sha2-512-etm@openssh.com
