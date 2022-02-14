@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  remote_user: root
+  tasks:
+    - name: Test ssh_key
+      ssh_keys:
+        user: user
+        key: ssh-rsa ABAAB3Nza...
+        present: true
+        expire_time: 5
+        update_expire_time: true
+        file_path: ./test_auth_keys
