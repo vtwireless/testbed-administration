@@ -4,8 +4,8 @@
 AddressFamily inet
 
 # listen only on the local network
-{# get the local network from vars #}
-ListenAddress {{ lan_subnet }}.0.0/24
+{# get the local network from vars TODO: re-enable after testing#}
+# ListenAddress {{ lan_ip }}:22
 
 # override to prevent legacy folder beinmg supported
 AuthorizedKeysFile .ssh/authorized_keys
@@ -30,6 +30,6 @@ PermitRootLogin forced-commands-only
 # overkill encryption settings, could probably tone it down if you wanted to for compat 
 Ciphers aes256-gcm@openssh.com
 {#use sk-ssh-ed25519 for yubikeys#}
-HostKeyAlgorithms ecdsa-sha2-nistp521, ssh-ed25519, ssh-ed25519-cert-v01@openssh.com, ecdsa-sha2-nistp521-cert-v01@openssh.com, sk-ssh-ed25519-cert-v01@openssh.com
-KexAlgorithms ecdh-sha2-nistp521, curve25519-sha256
-MACs umac-128-etm@openssh.com, hmac-sha2-512-etm@openssh.com
+HostKeyAlgorithms ecdsa-sha2-nistp521,ssh-ed25519,sk-ssh-ed25519-cert-v01@openssh.com
+KexAlgorithms ecdh-sha2-nistp521,curve25519-sha256
+MACs umac-128-etm@openssh.com,hmac-sha2-512-etm@openssh.com

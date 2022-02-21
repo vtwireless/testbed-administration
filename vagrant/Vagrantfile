@@ -4,7 +4,7 @@
 Vagrant.configure("2") do |config|
   # default options for all machines
   config.vm.box = "almalinux/centos-stream-9"
-  
+  config.ssh.insert_key = false
   # Host specific configuration:
   
   # router
@@ -19,7 +19,6 @@ Vagrant.configure("2") do |config|
 	  router.vm.network "private_network", type: "dhcp"
 	end
   
-  #vpn
   config.vm.define "infra" do |infra|
 	  infra.vm.hostname = "vtwireless.infra"
 	  infra.vm.network "private_network", ip: "172.16.0.2",
