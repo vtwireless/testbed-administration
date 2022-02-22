@@ -1,0 +1,10 @@
+---
+# tasks file for dns_client
+- name: Update resolv.conf
+  template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+- name: "Make sure bind-utils is installed for debugging dns"
+  dnf:
+    name: bind-utils
+    state: present

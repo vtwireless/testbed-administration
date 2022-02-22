@@ -2,19 +2,19 @@
 # tasks file for router_firewall
 #setup
 - name: "Get device for wan network"
-  shell: "ip route | grep {{ wan_subnet }} | sed 's/^.*dev \\([^ ]*\\).*$/\\1/g'"
+  shell: "ip route | grep {{ network.subnet.grep.wan }} | sed 's/^.*dev \\([^ ]*\\).*$/\\1/g'"
   register: wan_dev
   changed_when: false
 - debug:
     var: wan_dev.stdout
 - name: "Get device for dmz network"
-  shell: "ip route | grep {{ dmz_subnet }} | sed 's/^.*dev \\([^ ]*\\).*$/\\1/g'"
+  shell: "ip route | grep {{ network.subnet.grep.dmz }} | sed 's/^.*dev \\([^ ]*\\).*$/\\1/g'"
   register: dmz_dev
   changed_when: false
 - debug:
     var: dmz_dev.stdout
 - name: "Get device for lan network"
-  shell: "ip route | grep {{ lan_subnet }} | sed 's/^.*dev \\([^ ]*\\).*$/\\1/g'"
+  shell: "ip route | grep {{ network.subnet.grep.lan }} | sed 's/^.*dev \\([^ ]*\\).*$/\\1/g'"
   register: lan_dev
   changed_when: false
 - debug:

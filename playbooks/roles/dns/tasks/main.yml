@@ -1,0 +1,35 @@
+---
+# tasks file for dns
+- name: "Make sure bind is installed"
+  dnf:
+    name: bind
+    state: present
+    
+- name: "Make sure bind is enabled and running"
+  service:
+    name: named
+    enabled: yes
+    state: started
+    
+- name: "Make sure bind-utils is installed for debugging dns"
+  dnf:
+    name: bind-utils
+    state: present
+
+- name: Update named.conf
+  template:
+    src: named.conf.j2
+    dest: /etc/named.conf
+    owner: named
+    group: named
+    mode: '0600'
+  notify: dns up
+
+- name: Update lan.zone
+  template:
+    src: lan.zone.j2
+    dest: /var/named/lan.zone
+    owner: named
+    group: named
+    mode: '0600'
+  notify: dns up

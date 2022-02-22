@@ -1,0 +1,14 @@
+- hosts: dns
+  become: yes
+  vars_files:
+    - "vars/network.yml"
+  roles:
+    - dns
+
+
+- hosts: not_dns
+  become: yes
+  vars_files:
+    - "vars/network.yml"
+  roles:
+    - dns_client

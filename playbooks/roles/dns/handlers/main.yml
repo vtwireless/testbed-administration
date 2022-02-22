@@ -1,0 +1,12 @@
+---
+# handlers file for dns
+- name: restart named 
+  service:
+    name: named
+    state: restarted
+  listen: "dns up"
+- name: update resolv.conf
+  template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+  listen: "dns up"

@@ -1,3 +1,10 @@
 ---
 - hosts: all
+  vars_files:
+    - "vars/network.yml"
+  become: True
+  roles:
+    - ssh
+
 - import_playbook: router.yml
+- import_playbook: dns.yml
