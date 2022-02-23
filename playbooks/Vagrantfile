@@ -8,15 +8,22 @@ current_dir    = File.dirname(File.expand_path(__FILE__))
 # settings file is shared with ansible inventory, to keep duplication as low as possible
 settings        = YAML.load_file("#{current_dir}/inventory_vagrant")["all"]["hosts"]
 
+$install_ansible = <<-SCRIPT
+dnf install -y ansible-core
+runuser -l vagrant -c 'ansible-galaxy collection install -r /vagrant/requirements.yml --force'
+SCRIPT
+
 Vagrant.configure("2") do |config|
 	# default options for all machines
-	config.vm.box = "almalinux/centos-stream-9"
-	config.ssh.insert_key = false
+	config.vm.box = "boxomatic/centos-stream-9"
+	config.ssh.insert_key = true
 	# Host specific configuration:
 
 	# iterate over every vm in the config
 	settings.each do |vm_name, vm_settings|
 		config.vm.define vm_name do |vm_config|
+			# remove synced folder
+			vm_config.vm.synced_folder ".", "/vagrant", disabled: true
 			# set name to the key in config
 			vm_config.vm.hostname = vm_name
 			# iterate over int nets and add them
@@ -39,12 +46,13 @@ Vagrant.configure("2") do |config|
 		# Configure ansible provisioning here, inventory file is also used by vagrant
 		# this is inside the last vm so setup is done once at the end,
 		# also using a vm for ansible means this will work on windows
+		prov.vm.provision "shell", inline: $install_ansible
 		prov.vm.provision :ansible_local do |ansible|
 			ansible.limit          = "all"
-			ansible.playbook       = "../playbooks/playbook.yml"
-			ansible.inventory_path = "inventory"
-			ansible.verbose        = true
-			ansible.install        = true
+			ansible.playbook       = "playbook.yml"
+			ansible.config_file    = "ansible_vagrant.cfg"
+			ansible.inventory_path = "inventory_vagrant"
+			ansible.install        = false # currently auto install is broken with centos 9, maunually install with the above shell provision
 		end
 	end
 end

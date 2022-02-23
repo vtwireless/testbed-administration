@@ -22,21 +22,21 @@
 
 # zones
 - name: "Make sure wan ip range is in appropriate zone"
-  ansible.posix.firewalld:
+  firewalld:
     zone: external
     interface: "{{ wan_dev.stdout }}"
     permanent: yes
     immediate: yes
     state: enabled
 - name: "Make sure dmz ip range is in appropriate zone"
-  ansible.posix.firewalld:
+  firewalld:
     zone: dmz
     interface: "{{ dmz_dev.stdout }}"
     permanent: yes
     immediate: yes
     state: enabled
 - name: "Make sure lan ip range is in appropriate zone"
-  ansible.posix.firewalld:
+  firewalld:
     zone: internal
     interface: "{{ lan_dev.stdout }}"
     permanent: yes
@@ -45,7 +45,7 @@
 
 # rules
 - name: "Let dns queries through"
-  ansible.posix.firewalld:
+  firewalld:
     zone: internal
     service: dns
     permanent: yes
