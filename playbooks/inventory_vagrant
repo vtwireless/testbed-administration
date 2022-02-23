@@ -1,0 +1,22 @@
+all:
+  hosts:
+    router:
+      ansible_host: 172.31.0.20 # used by ansible (set to another net so vagrant won't lock itself out)
+      ip_for_dns: 172.16.0.1 # used by ansible
+      int_nets: # used by vagrant
+        lan: 172.16.0.1
+        dmz: 172.17.0.1
+      public_nets: # used by vagrant
+        wan: 192.168.56.10
+
+    infra:
+      ansible_host: 172.31.0.21
+      ip_for_dns: 172.16.0.3
+      int_nets:
+        lan: 172.16.0.3
+      public_nets: {}
+lan:
+  hosts:
+    infra:
+dmz:
+  hosts:

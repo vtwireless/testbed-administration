@@ -1,7 +1,10 @@
 ---
-- hosts: routers
+- hosts: router
   become: yes
   vars_files:
     - "vars/network.yml"
-  # roles:
-  #   - router_firewall
+  roles:
+    - firewall_router
+    - ssh
+    - add_users
+    - dns

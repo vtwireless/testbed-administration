@@ -1,10 +1,7 @@
 ---
 - hosts: all
-  vars_files:
-    - "vars/network.yml"
-  become: True
-  roles:
-    - ssh
-
+  # tasks:
+  #   - debug:
+  #       var: hostvars
 - import_playbook: router.yml
-- import_playbook: dns.yml
+- import_playbook: lan_debug.yml

@@ -6,7 +6,7 @@ network: # I sure hope it does!
       forwarded:
         - 1.1.1.1
         - 1.0.0.1
-    entries:
+    entries: # TODO: ansible knows how to find these ips for us, use that instead
       router: 172.16.0.1
       vpn: 172.16.0.1
       kanidm: 172.16.0.2

@@ -1,0 +1,53 @@
+---
+# tasks file for firewall_router
+#setup
+- name: "Get device for wan network"
+  shell: "ip route | grep {{ network.subnet.grep.wan }} | sed 's/^.*dev \\([^ ]*\\).*$/\\1/g'"
+  register: wan_dev
+  changed_when: false
+- debug:
+    msg: "Found wan network on device {{ wan_dev.stdout }} "
+- name: "Get device for dmz network"
+  shell: "ip route | grep {{ network.subnet.grep.dmz }} | sed 's/^.*dev \\([^ ]*\\).*$/\\1/g'"
+  register: dmz_dev
+  changed_when: false
+- debug:
+    msg: "Found dmz network on device {{ dmz_dev.stdout }}"
+- name: "Get device for lan network"
+  shell: "ip route | grep {{ network.subnet.grep.lan }} | sed 's/^.*dev \\([^ ]*\\).*$/\\1/g'"
+  register: lan_dev
+  changed_when: false
+- debug:
+    msg: "Found lan network on device {{ lan_dev.stdout }}"
+
+# zones
+- name: "Make sure wan ip range is in appropriate zone"
+  ansible.posix.firewalld:
+    zone: external
+    interface: "{{ wan_dev.stdout }}"
+    permanent: yes
+    immediate: yes
+    state: enabled
+- name: "Make sure dmz ip range is in appropriate zone"
+  ansible.posix.firewalld:
+    zone: dmz
+    interface: "{{ dmz_dev.stdout }}"
+    permanent: yes
+    immediate: yes
+    state: enabled
+- name: "Make sure lan ip range is in appropriate zone"
+  ansible.posix.firewalld:
+    zone: internal
+    interface: "{{ lan_dev.stdout }}"
+    permanent: yes
+    immediate: yes
+    state: enabled
+
+# rules
+- name: "Let dns queries through"
+  ansible.posix.firewalld:
+    zone: internal
+    service: dns
+    permanent: yes
+    immediate: yes
+    state: enabled

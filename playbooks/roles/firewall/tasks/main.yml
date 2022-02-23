@@ -1,0 +1,11 @@
+---
+# tasks file for firewall
+- name: "Make sure firewalld is installed"
+  dnf:
+    name: firewalld
+    state: present
+- name: "Make sure firewalld is enabled and running"
+  service:
+    name: firewalld
+    enabled: yes
+    state: started

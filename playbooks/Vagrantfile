@@ -1,0 +1,50 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# as per https://stackoverflow.com/questions/16708917/how-do-i-include-variables-in-my-vagrantfile
+require 'yaml'
+
+current_dir    = File.dirname(File.expand_path(__FILE__))
+# settings file is shared with ansible inventory, to keep duplication as low as possible
+settings        = YAML.load_file("#{current_dir}/inventory_vagrant")["all"]["hosts"]
+
+Vagrant.configure("2") do |config|
+	# default options for all machines
+	config.vm.box = "almalinux/centos-stream-9"
+	config.ssh.insert_key = false
+	# Host specific configuration:
+
+	# iterate over every vm in the config
+	settings.each do |vm_name, vm_settings|
+		config.vm.define vm_name do |vm_config|
+			# set name to the key in config
+			vm_config.vm.hostname = vm_name
+			# iterate over int nets and add them
+			vm_settings["int_nets"].each do |net_name, net_ip|
+				vm_config.vm.network "private_network", ip: net_ip,
+					virtualbox__intnet: true,
+					name: net_name
+			end
+			# iterate over public nets and add them
+			vm_settings["public_nets"].each do |net_name, net_ip|
+				vm_config.vm.network "private_network", ip: net_ip
+			end
+			# set up the net that the ansible vm will use ( only for when testing in vagrant )
+			vm_config.vm.network "private_network", ip: vm_settings["ansible_host"]
+		end
+	end
+
+	config.vm.define "provisioner" do |prov|
+		prov.vm.hostname = "ansible.provisioner"
+		# Configure ansible provisioning here, inventory file is also used by vagrant
+		# this is inside the last vm so setup is done once at the end,
+		# also using a vm for ansible means this will work on windows
+		prov.vm.provision :ansible_local do |ansible|
+			ansible.limit          = "all"
+			ansible.playbook       = "../playbooks/playbook.yml"
+			ansible.inventory_path = "inventory"
+			ansible.verbose        = true
+			ansible.install        = true
+		end
+	end
+end
