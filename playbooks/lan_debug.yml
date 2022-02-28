@@ -1,6 +1,4 @@
 - hosts: infra
   become: yes
-  vars_files:
-    - "vars/network.yml"
   roles:
     - dns_client
