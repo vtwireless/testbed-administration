@@ -1,3 +1,1 @@
-{% for item in network.dns.nameservers.internal %}
-nameserver {{ item }}
-{% endfor %}
+nameserver {{ hostvars.router.ip_for_dns }}
