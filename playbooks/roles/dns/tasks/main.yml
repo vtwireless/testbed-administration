@@ -33,3 +33,12 @@
     group: named
     mode: '0600'
   notify: dns up
+
+# firewall rules
+- name: "Let dns queries through"
+  firewalld:
+    zone: internal
+    service: dns
+    permanent: yes
+    immediate: yes
+    state: enabled

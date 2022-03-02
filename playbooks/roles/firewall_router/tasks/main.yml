@@ -42,12 +42,3 @@
     permanent: yes
     immediate: yes
     state: enabled
-
-# rules
-- name: "Let dns queries through"
-  firewalld:
-    zone: internal
-    service: dns
-    permanent: yes
-    immediate: yes
-    state: enabled
