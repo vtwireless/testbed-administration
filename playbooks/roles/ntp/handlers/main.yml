@@ -1,6 +1,0 @@
----
-# handlers file for ntp
-- name: Restart chronyd
-  service:
-    name: chronyd
-    state: restarted

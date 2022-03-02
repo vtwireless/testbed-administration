@@ -3,5 +3,5 @@
   # tasks:
   #   - debug:
   #       var: hostvars
-- import_playbook: router.yml
+- import_playbook: node_router.yml
 - import_playbook: lan_debug.yml
