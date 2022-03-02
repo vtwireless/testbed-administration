@@ -1,1 +1,1 @@
-nameserver {{ hostvars.router.ip_for_dns }}
+nameserver {{ hostvars[role_map.dns].ip_for_dns }}

@@ -9,7 +9,7 @@
 acl {{ zone }} { {{ ip_addr }}; }; {# WARN: hardcoded 16 subnet mask and string length #}
 {% endfor %}
 options {
-        listen-on port 53 { 127.0.0.1; {{ hostvars.router.ip_for_dns }}; };
+        listen-on port 53 { 127.0.0.1; {{ ip_for_dns }}; };
         forwarders { {% for item in nameservers.forwarded %} {{ item }}; {% endfor %} };
         directory       "/var/named";
         dump-file       "/var/named/data/cache_dump.db";

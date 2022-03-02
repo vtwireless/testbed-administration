@@ -2,3 +2,4 @@
   become: yes
   roles:
     - dns_client
+    - ntp_client

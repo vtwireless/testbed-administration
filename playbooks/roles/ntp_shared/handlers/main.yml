@@ -1,0 +1,6 @@
+---
+# handlers file for ntp_shared
+- name: Restart chronyd
+  service:
+    name: chronyd
+    state: restarted

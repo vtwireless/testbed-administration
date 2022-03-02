@@ -1,8 +1,9 @@
 ---
-- hosts: router
+- hosts: node-router
   become: yes
   roles:
     - firewall_router
     - ssh
     - add_users
-    - dns
+    - dns_server
+    - ntp_server

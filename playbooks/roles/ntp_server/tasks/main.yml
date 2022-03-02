@@ -1,0 +1,19 @@
+---
+# tasks file for ntp_server
+- name: deploy chrony.conf template
+  template:
+    src: chrony.conf.j2
+    dest: /etc/chrony.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart chronyd
+
+# firewall rules
+- name: "Let ntp queries through"
+  firewalld:
+    zone: internal
+    service: ntp
+    permanent: yes
+    immediate: yes
+    state: enabled
