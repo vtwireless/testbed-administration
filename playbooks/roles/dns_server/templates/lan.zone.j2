@@ -11,7 +11,10 @@ lan.	IN	SOA	ns.lan.	mattjs.vt.edu. ( {# Todo: change this to an email that won't
 ) ; {# see https://www.zytrax.com/books/dns/ch8/soa.html for more info #}
 
 lan.	IN	NS	ns.lan. ; set the name server for lan
-ns	IN	A	{{ hostvars.router.ip_for_dns }} ; set the ip of this server
+ns	IN	A	{{ ip_for_dns }} ; set the ip of this server
 {% for host, options in hostvars.items() %}
 {{ host }}	IN	A	{{ options.ip_for_dns }} ; 
+{% endfor %}
+{% for service, host in role_map.items() %}
+{{ service }}	IN	CNAME	{{ host }} ; 
 {% endfor %}

@@ -1,0 +1,4 @@
+pool {{ ntp.pool }} iburst maxsources 4
+allow {{ sub_nets.lan }}
+allow {{ sub_nets.dmz }}
+bindaddress {{ ip_for_dns }}

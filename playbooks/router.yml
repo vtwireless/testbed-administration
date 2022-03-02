@@ -5,4 +5,5 @@
     - firewall_router
     - ssh
     - add_users
-    - dns
+    - dns_server
+    - ntp_server

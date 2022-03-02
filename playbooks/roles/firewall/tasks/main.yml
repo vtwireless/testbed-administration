@@ -8,4 +8,5 @@
   service:
     name: firewalld
     enabled: yes
-    state: started
+    state: latest
+    update_cache: yes 

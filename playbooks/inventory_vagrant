@@ -9,10 +9,6 @@ all:
         dmz: 172.17.0.1
       public_nets: # used by ansible only for router
         wan: 192.168.56.10
-      sub_nets: # used by ansible only for router
-        lan: "172.16.0.0/16" 
-        dmz: "172.17.0.0/16"
-        wan: "192.168.56.0/24"
 
     infra:
       ansible_host: 172.31.0.21

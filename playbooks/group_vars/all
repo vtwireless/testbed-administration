@@ -1,0 +1,9 @@
+---
+role_map:
+  router: 'router'
+  dns: 'router'
+  ntp: 'router'
+sub_nets:
+  lan: "172.16.0.0/16" 
+  dmz: "172.17.0.0/16"
+  wan: "192.168.56.0/24"
