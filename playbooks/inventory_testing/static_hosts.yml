@@ -1,0 +1,14 @@
+lan:
+  hosts:
+    infra:
+dmz:
+  hosts:
+router:
+  hosts: 
+    gateway:
+dns:
+  hosts:
+    gateway:
+ntp:
+  hosts:
+    gateway:

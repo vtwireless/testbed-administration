@@ -5,9 +5,12 @@
 require 'yaml'
 
 current_dir    = File.dirname(File.expand_path(__FILE__))
-# settings file is shared with ansible inventory, to keep duplication as low as possible
-settings        = YAML.load_file("#{current_dir}/inventory_vagrant")["all"]["hosts"]
-
+# settings file is shared with ansible inventory, to keep things DRY
+settings = {}
+Dir.foreach("#{current_dir}/inventory_testing/host_vars") do |filename|
+	next if filename == '.' or filename == '..'
+	settings[File.basename(filename, ".yml")] = YAML.load_file("#{current_dir}/inventory_testing/host_vars/#{filename}")
+end
 $install_ansible = <<-SCRIPT
 dnf install -y ansible-core
 runuser -l vagrant -c 'ansible-galaxy collection install -r /vagrant/requirements.yml --force'
@@ -51,7 +54,7 @@ Vagrant.configure("2") do |config|
 			ansible.limit          = "all"
 			ansible.playbook       = "playbook.yml"
 			ansible.config_file    = "ansible_vagrant.cfg"
-			ansible.inventory_path = "inventory_vagrant"
+			ansible.inventory_path = "inventory_testing"
 			ansible.install        = false # currently auto install is broken with centos 9, maunually install with the above shell provision
 		end
 	end

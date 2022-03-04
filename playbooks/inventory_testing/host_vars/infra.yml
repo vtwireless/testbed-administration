@@ -1,0 +1,6 @@
+ansible_host: 172.31.0.21
+ansible_ssh_private_key_file: "/vagrant/.vagrant/machines/infra/virtualbox/private_key"
+ip_for_dns: 172.16.0.3
+int_nets:
+  lan: 172.16.0.3
+public_nets: {}

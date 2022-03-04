@@ -2,3 +2,4 @@
 *.log
 password.txt
 .vscode/
+inventory_production/

@@ -1,5 +1,5 @@
 ---
-- hosts: node-router
+- hosts: gateway
   become: yes
   roles:
     - firewall_router

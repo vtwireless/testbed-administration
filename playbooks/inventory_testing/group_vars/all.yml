@@ -1,9 +1,6 @@
 ---
-role_map:
-  router: 'node-router'
-  dns: 'node-router'
-  ntp: 'node-router'
 sub_nets:
   lan: "172.16.0.0/16" 
   dmz: "172.17.0.0/16"
   wan: "192.168.56.0/24"
+vagrant: true
