@@ -4,6 +4,8 @@
   template:
     src: resolv.conf.j2
     dest: /etc/resolv.conf
+- debug:
+    var: groups
 - name: "Make sure bind-utils is installed for debugging dns"
   dnf:
     name: bind-utils

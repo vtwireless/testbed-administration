@@ -1,0 +1,14 @@
+lan_net:
+  hosts:
+    infra:
+dmz_net:
+  hosts:
+router:
+  hosts: 
+    gateway:
+dns:
+  hosts:
+    gateway:
+ntp:
+  hosts:
+    gateway:
