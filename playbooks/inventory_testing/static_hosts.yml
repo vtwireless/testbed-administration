@@ -1,7 +1,7 @@
-lan:
+lan_net:
   hosts:
     infra:
-dmz:
+dmz_net:
   hosts:
 router:
   hosts: 
