@@ -20,7 +20,7 @@ ns	IN	A	{{ ip_for_dns }} ; set the ip of this server
 		{% if hosts|length == 1 %}{# If group is a singleton (ie, only one router), it owns that dns entry #}
 {{ service }}	IN	CNAME	{{ hosts[0] }} ; 
 		{% else %}
-{% for host in hosts %}{# Add numbering if there are multiple hosts in the group #}
+			{% for host in hosts %}{# Add numbering if there are multiple hosts in the group #}
 {{ service }}-{{ loop.index }}	IN	CNAME	{{ hosts[loop.index0] }} ; 
 			{% endfor %}
 		{% endif %}
