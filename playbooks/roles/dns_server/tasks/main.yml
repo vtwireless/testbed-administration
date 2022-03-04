@@ -5,12 +5,6 @@
     name: bind
     state: present
     
-- name: "Make sure bind is enabled and running"
-  service:
-    name: named
-    enabled: yes
-    state: started
-    
 - name: "Make sure bind-utils is installed for debugging dns"
   dnf:
     name: bind-utils
@@ -33,7 +27,13 @@
     group: named
     mode: '0600'
   notify: dns up
-
+    
+- name: "Make sure bind is enabled and running"
+  service:
+    name: named
+    enabled: yes
+    state: started
+    
 # firewall rules
 - name: "Let dns queries through"
   firewalld:

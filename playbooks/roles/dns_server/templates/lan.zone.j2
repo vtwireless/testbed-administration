@@ -16,13 +16,13 @@ ns	IN	A	{{ ip_for_dns }} ; set the ip of this server
 {{ host }}	IN	A	{{ options.ip_for_dns }} ; 
 {% endfor %}
 {% for service, hosts in groups.items() %}
-	{% if service in dns_advertised_groups %}
-		{% if hosts|length == 1 %}{# If group is a singleton (ie, only one router), it owns that dns entry #}
+{% if service in dns_advertised_groups %}
+{% if hosts|length == 1 %}{# If group is a singleton (ie, only one router), it owns that dns entry #}
 {{ service }}	IN	CNAME	{{ hosts[0] }} ; 
-		{% else %}
-			{% for host in hosts %}{# Add numbering if there are multiple hosts in the group #}
+{% else %}
+{% for host in hosts %}{# Add numbering if there are multiple hosts in the group #}
 {{ service }}-{{ loop.index }}	IN	CNAME	{{ hosts[loop.index0] }} ; 
-			{% endfor %}
-		{% endif %}
-	{% endif %}
+{% endfor %}
+{% endif %}
+{% endif %}
 {% endfor %}
