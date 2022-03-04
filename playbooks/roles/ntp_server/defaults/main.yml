@@ -1,0 +1,4 @@
+---
+# defaults file for ntp_server
+ntp:
+  pool: pool.ntp.org

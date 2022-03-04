@@ -1,8 +1,0 @@
----
-- hosts: router
-  become: yes
-  roles:
-    - firewall_router
-    - ssh
-    - add_users
-    - dns

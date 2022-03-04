@@ -1,0 +1,10 @@
+---
+# tasks file for ntp_client
+- name: deploy chrony.conf template
+  template:
+    src: chrony.conf.j2
+    dest: /etc/chrony.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart chronyd

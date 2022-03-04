@@ -7,7 +7,7 @@ AddressFamily inet
 {# get the local network from vars TODO: re-enable after testing#}
 # ListenAddress {{ lan_ip }}:22
 
-# override to prevent legacy folder beinmg supported
+# override to prevent legacy folder being supported
 AuthorizedKeysFile .ssh/authorized_keys
 
 # no passwords
@@ -30,6 +30,9 @@ PermitRootLogin forced-commands-only
 # overkill encryption settings, could probably tone it down if you wanted to for compat 
 Ciphers aes256-gcm@openssh.com
 {#use sk-ssh-ed25519 for yubikeys#}
-HostKeyAlgorithms ecdsa-sha2-nistp521,ssh-ed25519,sk-ssh-ed25519-cert-v01@openssh.com
+HostKeyAlgorithms ecdsa-sha2-nistp521,ssh-ed25519,sk-ssh-ed25519-cert-v01@openssh.com{% if vagrant %},ssh-rsa{% endif %} 
 KexAlgorithms ecdh-sha2-nistp521,curve25519-sha256
 MACs umac-128-etm@openssh.com,hmac-sha2-512-etm@openssh.com
+
+# allows sftp
+Subsystem sftp internal-sftp

@@ -1,0 +1,6 @@
+---
+# tasks file for ntp_shared
+- name: "Make sure chrony is installed"
+  dnf:
+    name: chrony
+    state: present
