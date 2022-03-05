@@ -13,7 +13,7 @@ Dir.foreach("#{current_dir}/inventory_testing/host_vars") do |filename|
 end
 $install_ansible = <<-SCRIPT
 dnf install -y ansible-core
-runuser -l vagrant -c 'ansible-galaxy collection install -r /vagrant/requirements.yml --force'
+runuser -l vagrant -c 'ansible-galaxy collection install -r /vagrant/requirements.yml'
 SCRIPT
 
 Vagrant.configure("2") do |config|

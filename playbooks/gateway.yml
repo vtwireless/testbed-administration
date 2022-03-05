@@ -7,3 +7,4 @@
     - add_users
     - dns_server
     - ntp_server
+    - ssl_ca

@@ -1,0 +1,3 @@
+CA_file: Corenet_CA_key.pem
+CA_dir: /certs
+encryption_alg: ED25519
