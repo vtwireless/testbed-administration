@@ -1,0 +1,15 @@
+---
+# handlers file for ssl_ca
+- name: Pull keys from CA
+  fetch:
+    src: "{{ CA_dir }}/{{ CA_file }}.pem"
+    dest: "/tmp/{{ CA_file }}.pem"
+  listen: "update keys"
+  notify: "push keys"
+
+- name: Push keys to clients
+  include_tasks: distribute_ca_key.yml
+  loop: "{{ groups.ssl_client }}"
+  loop_control:
+    loop_var: client
+  listen: "push keys"

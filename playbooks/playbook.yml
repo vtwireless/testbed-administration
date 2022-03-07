@@ -1,7 +1,4 @@
 ---
 - hosts: all
-  # tasks:
-  #   - debug:
-  #       var: hostvars
-- import_playbook: node_router.yml
-- import_playbook: lan_debug.yml
+- import_playbook: gateway.yml
+- import_playbook: infra.yml

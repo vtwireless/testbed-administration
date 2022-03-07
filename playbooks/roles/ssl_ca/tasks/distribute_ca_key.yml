@@ -1,0 +1,14 @@
+---
+- name: "distribute keys"
+  copy:
+    src: "/tmp/{{ CA_file }}.pem"
+    dest: "/etc/pki/ca-trust/source/anchors/{{ CA_file }}.crt"
+    mode: 600
+    owner: root
+    group: root
+  delegate_to: "{{client}}"
+- name: "update ca"
+  command:
+    cmd: update-ca-trust
+  delegate_to: "{{client}}"
+  

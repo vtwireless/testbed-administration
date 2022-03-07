@@ -12,3 +12,9 @@ dns:
 ntp:
   hosts:
     gateway:
+ca:
+  hosts:
+    gateway:
+ssl_client:
+  hosts:
+    infra:
