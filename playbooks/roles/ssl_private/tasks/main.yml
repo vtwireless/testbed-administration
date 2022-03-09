@@ -1,0 +1,23 @@
+---
+# tasks file for ssl_private
+- name: Add certs folder
+  file:
+    state: directory
+    path: "{{ CA_dir }}/"
+    owner: root
+    group: root
+    mode: '0600'
+
+# see https://deliciousbrains.com/ssl-certificate-authority-for-local-https-development/ 
+- name: create private CA key
+  command:
+    argv:
+      - "openssl"
+      - "genpkey"
+      - "-algorithm"
+      - "{{ encryption_alg }}"
+      - "-out"
+      - "{{ CA_dir }}/{{ CA_file }}.key"
+      - "-pass"
+      - "pass:{{ ca_priv_pass }}"
+    creates: "{{ CA_file }}.key"

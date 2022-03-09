@@ -1,3 +1,4 @@
-CA_file: Corenet_CA_key.pem
+CA_file: Corenet_CA_key
 CA_dir: /certs
 encryption_alg: ED25519
+subj_string: "/C=US/ST=VA/L=Blacksburg/O=VT/OU=corenet"

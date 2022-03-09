@@ -1,7 +1,8 @@
-lan_net:
+lan:
   hosts:
     infra:
-dmz_net:
+    infra-2:
+dmz:
   hosts:
 router:
   hosts: 
@@ -18,3 +19,7 @@ ca:
 ssl_client:
   hosts:
     infra:
+    infra-2:
+kanidm:
+  hosts:
+    infra-2:

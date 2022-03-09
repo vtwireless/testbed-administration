@@ -3,7 +3,7 @@
 - name: "Make sure firewalld is installed"
   dnf:
     name: firewalld
-    state: present
+    state: latest
 - name: "Make sure firewalld is enabled and running"
   service:
     name: firewalld

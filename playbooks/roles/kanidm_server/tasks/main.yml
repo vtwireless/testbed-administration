@@ -1,0 +1,20 @@
+---
+# tasks file for kanidm
+- name: Install podman
+  dnf:
+    name: podman
+    state: latest
+- name: Pull kanidm/server:latest image
+  podman_image:
+    name: docker.io/kanidm/server
+    tag: "{% if ansible_architecture == 'x86_64' %}x86_64_{% endif %}latest"
+- name: create kanidm volume
+  containers.podman.podman_volume:
+    state: present
+    name: kanidm
+  register: kanidm_volume
+- name: copy kanidm key into volume
+  copy:
+    src: "{{CA_dir}}/{{CA_file}}.key"
+    dest: "{{kanidm_volume.volume.Mountpoint}}/key.pem"
+    remote_src: yes
