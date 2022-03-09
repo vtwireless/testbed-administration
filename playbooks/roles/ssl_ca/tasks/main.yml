@@ -1,27 +1,4 @@
----
-# tasks file for ssl_ca
-- name: Add certs folder
-  file:
-    state: directory
-    path: /certs/
-    owner: root
-    group: root
-    mode: '0600'
-
-# see https://deliciousbrains.com/ssl-certificate-authority-for-local-https-development/ 
-- name: create private CA key
-  command:
-    argv:
-      - "openssl"
-      - "genpkey"
-      - "-algorithm"
-      - "RSA"
-      - "-out"
-      - "{{ CA_dir }}/{{ CA_file }}.key"
-      - "-pass"
-      - "pass:{{ ca_priv_pass }}"
-    creates: "{{ CA_file }}.key"
-  
+---  
 - name: create public CA key
   command:
     cmd: "openssl req -x509 -new -key {{ CA_dir }}/{{ CA_file }}.key -sha256 -days 1825 -out {{ CA_dir }}/{{ CA_file }}.pem -passin pass:{{ ca_priv_pass }} -subj {{ subj_string }} -batch"

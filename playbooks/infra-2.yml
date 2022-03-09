@@ -1,5 +1,6 @@
-- hosts: infra
+- hosts: infra-2
   become: yes
   roles:
     - dns_client
     - ntp_client
+    - kanidm_server

@@ -2,3 +2,4 @@
 - hosts: all
 - import_playbook: gateway.yml
 - import_playbook: infra.yml
+- import_playbook: infra-2.yml

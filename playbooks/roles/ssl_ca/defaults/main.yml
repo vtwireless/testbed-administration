@@ -1,6 +1,7 @@
 ---
 # defaults file for ssl_ca
-ca_file: CA_key
+CA_file: CA_key
+CA_dir: /certs
 encryption_alg: RSA
 ca_priv_pass: ChangeMe # or overwrite in a vars file
-subj_string: "/C=US/ST=VA/L=Blacksburg/O=VT/OU=corenet"
+subj_string: "/C=__/ST=__/L=___/O=__/OU=__"
