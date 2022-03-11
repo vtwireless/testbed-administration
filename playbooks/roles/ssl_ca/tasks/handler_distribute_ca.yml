@@ -1,31 +1,34 @@
 
-- name: make tempfolder
+- name: Make tempfolder
   local_action:
     module: ansible.builtin.tempfile
-    prefix: crts
+    path: "{{ playbook_dir }}/.tmp"
+    prefix: ca_crts
     state: directory
   register: ca_pubkey_folder
+- name: Distribute keys 
+  block:
+  - name: Pull keys from CA
+    fetch:
+      src: "{{ pub_key.dir }}/{{ pub_key.file }}"
+      dest: "{{ ca_pubkey_folder.path }}/{{ pub_key.file }}"
+      flat: yes
 
-- name: Pull keys from CA
-  fetch:
-    src: "{{ pub_key.dir }}{{ pub_key.file }}"
-    dest: "{{ ca_pubkey_folder.path }}/{{ pub_key.file }}"
+  - name: Push keys to clients
+    include_tasks: distribute_ca_key_loop.yml
+    loop: "{{ groups.ssl_client }}"
+    loop_control:
+      loop_var: client
 
-- name: Push keys to clients
-  include_tasks: distribute_ca_key_loop.yml
-  loop: "{{ groups.ssl_client }}"
-  loop_control:
-    loop_var: client
-
-- name: "remove CA pubkey from local machine"
-  local_action:
-    module: ansible.builtin.file
-    path: "{{ ca_pubkey_folder.path }}/{{ pub_key.file }}"
-    state: absent
-
-- name: cleanup tempfolder
-  local_action:
-    module: ansible.builtin.file
-    path: "{{ ca_pubkey_folder.path }}"
-    state: absent
-  when: ca_pubkey_folder.path is defined
+  - name: "remove CA pubkey from local machine"
+    local_action:
+      module: ansible.builtin.file
+      path: "{{ ca_pubkey_folder.path }}/{{ pub_key.file }}"
+      state: absent
+  always:
+  - name: cleanup tempfolder
+    local_action:
+      module: ansible.builtin.file
+      path: "{{ ca_pubkey_folder.path }}"
+      state: absent
+    when: ca_pubkey_folder.path is defined

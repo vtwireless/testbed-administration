@@ -15,6 +15,11 @@
   register: kanidm_volume
 - name: copy kanidm key into volume
   copy:
-    src: "{{CA_dir}}/{{CA_file}}.key"
+    src: "/certs/key.pem"
     dest: "{{kanidm_volume.volume.Mountpoint}}/key.pem"
+    remote_src: yes
+- name: copy kanidm chain into volume
+  copy:
+    src: "/certs/chain.pem"
+    dest: "{{kanidm_volume.volume.Mountpoint}}/chain.pem"
     remote_src: yes

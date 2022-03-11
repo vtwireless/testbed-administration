@@ -6,5 +6,5 @@ subjectAltName = @alt_names
 
 [alt_names]
 {% for domain in key.domains %}
-DNS.{{ loop.index }} = {{ key.domain }} 
+DNS.{{ loop.index }} = {{ domain }} 
 {% endfor %}

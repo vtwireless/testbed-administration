@@ -1,0 +1,20 @@
+# defaults file for ssl_get_cert
+priv_key: 
+  dir: /certs
+  file: key.pem
+  encryption_alg: ED25519
+  pass: ""
+CA_server:
+  host: "{{ groups['ca'][0] }}" # CA server
+  certs_dir: /certs                     # CA server's private key directory
+  priv_key: "{{ hostvars[groups['ca'][0]].priv_key }}"
+  pub_key: "{{ hostvars[groups['ca'][0]].pub_key }}"
+key_requests:
+  - name: crt for kanidm          # human readable name
+    dir: /certs                   # directory of key
+    file: chain                   # filename of key
+    ext: pem                      # extension of key, can't be csr
+    subj_string: "/CUS/ST=VA/L=Blacksburg/O=VT/OU=wireless@vt"
+    exp: 365                      # expiration in days
+    domains:
+      - kanidm.lan
