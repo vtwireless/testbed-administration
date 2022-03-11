@@ -3,4 +3,8 @@
   command:
     cmd: "openssl req -x509 -new -key {{ priv_key.dir }}/{{ priv_key.file }} -sha256 -days 1825 -out {{ pub_key.dir }}/{{ pub_key.file }}{% if priv_key.pass != '' %} -passin pass:{{ priv_key.pass }}{% endif %} -subj {{ pub_key.subj_string }} -batch"
     creates: "{{ pub_key.dir }}/{{  pub_key.file }}"
-  notify: distribute ca
+  register: cert_auth
+
+- name: Distribute CA keys
+  include_tasks: handler_distribute_ca.yml
+  when: cert_auth.changed

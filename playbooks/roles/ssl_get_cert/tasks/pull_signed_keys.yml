@@ -1,70 +1,100 @@
 ---
-- debug: 
-  msg: "Signing key: {{ key.name }}..."
+- name: Check that the key exists
+  stat:
+    path: "{{ key.dir }}/{{ key.file }}.{{ key.ext }}"
+  register: stat_result
+
+- name: Make and push key
+  when: not stat_result.stat.exists
   
-- name: Make csr on host
-  command:
-    cmd: "openssl req -new -key {{ priv_key.dir }}/{{ priv_key.file }}.csr -sha256 -days 1825 -out {{ key.dir }}/{{ key.file }}.csr{% if priv_key.pass != '' %} -passin pass:{{ priv_key.pass }}{% endif %} -subj {{ key.subj_string }} -batch"
-    creates: "{{ key.dir }}/{{ key.file }}.csr"
-
-- name: Pull csr from host
-  fetch:
-    src: "{{ key.dir }}/{{ key.file }}.csr"
-    dest: "{{ crt_folder.path }}/{{ key.path }}.csr"
-
-- name: Push csr to CA
-  copy:
-    src: "{{ crt_folder.path }}/{{ key.path }}.csr"
-    dest: "{{ CA_server.certs_dir }}/{{ key.file }}.csr"
-    mode: 600
-    owner: root
-    group: root
-  delegate_to: "{{ CA_server.host }}"
-
-- name: Template extension config file
-  template:
-    src: "x509_ext.j2"
-    dest: "{{ CA_server.certs_dir }}/{{ key.file }}.ext"
-    mode: 600
-    owner: root
-    group: root
-  delegate_to: "{{ CA_server.host }}"
-
-- name: Sign csr on CA
-  command:
-    cmd: "openssl x509 -req -in {{ CA_server.certs_dir }}/{{ key.file }}.csr -CA {{ CA_server.pub_key.dir }}/{{ CA_server.pub_key.file }} -CAkey {{ CA_server.priv_key.dir }}/{{ CA_server.priv_key.file }} -CAcreateserial -out {{ CA_server.certs_dir }}/{{ key.file }}.{{ key.ext }} -days {{ key.exp }} -sha256 -extfile {{ CA_server.certs_dir }}/{{ key.file }}.ext"
-    creates: "{{ CA_server.certs_dir }}/{{ key.file }}.{{ key.ext }}"
-  delegate_to: "{{ CA_server }}"
-
-- name: Pull keys from CA
-  fetch:
-    src: "{{ CA_server.certs_dir }}/{{ key.file }}.{{ key.ext }}"
-    dest: "{{ crt_folder.path }}//{{ key.file }}.{{ key.ext }}"
-  delegate_to: "{{ CA_server }}"
-
-- name: Distribute signed key to client
-  copy:
-    src: "{{ crt_folder.path }}/{{ key.file }}.{{ key.ext }}"
-    dest: "{{ key.dir }}/{{ key.file }}.{{ key.ext }}"
-    mode: 600
-    owner: root
-    group: root
-
-- name: Remove signed key from local machine
-  local_action:
-    module: ansible.builtin.file
-    path: "{{ crt_folder.path }}/{{ key.file }}.{{ key.ext }}"
-    state: absent
+  block:
+  - name: No key found
+    debug: 
+      msg: "Signing key: {{ key.name }}..."
     
-- name: Remove csr from local machine
-  local_action:
-    module: ansible.builtin.file
-    path: "{{ crt_folder.path }}/{{ key.file }}.csr"
-    state: absent
+  - name: Make csr on host
+    command:
+      cmd: "openssl req -new -key {{ priv_key.dir }}/{{ priv_key.file }} -sha256 -days 1825 -out {{ key.dir }}/{{ key.file }}.csr{% if priv_key.pass != '' %} -passin pass:{{ priv_key.pass }}{% endif %} -subj {{ key.subj_string }} -batch"
+      creates: "{{ key.dir }}/{{ key.file }}.csr"
 
-- name: Remove crt from CA host ( csr is kept for book keeping )
-  local_action:
-    module: ansible.builtin.file
-    path: "{{ CA_server.certs_dir }}/{{ key.file }}.{{ key.ext }}"
-    state: absent
-  delegate_to: "{{ CA_server }}"
+  - name: Pull csr from host
+    fetch:
+      src: "{{ key.dir }}/{{ key.file }}.csr"
+      dest: "{{ crt_folder.path }}/{{ inventory_hostname }}/{{ key.file }}.csr"
+      flat: yes
+
+  - name: Push csr to CA
+    copy:
+      src: "{{ crt_folder.path }}/{{ inventory_hostname }}"
+      dest: "{{ CA_server.certs_dir }}/"
+      mode: 600
+      owner: root
+      group: root
+    delegate_to: "{{ CA_server.host }}"
+
+  - name: Template extension config file
+    template:
+      src: "x509_ext.j2"
+      dest: "{{ CA_server.certs_dir }}/{{ inventory_hostname }}/{{ key.file }}.ext"
+      mode: 600
+      owner: root
+      group: root
+    delegate_to: "{{ CA_server.host }}"
+
+  - name: Sign csr on CA
+    command:
+      cmd: > 
+        openssl x509 -req 
+        -in {{ CA_server.certs_dir }}/{{ inventory_hostname }}/{{ key.file }}.csr 
+        -CA {{ CA_server.pub_key.dir }}/{{ CA_server.pub_key.file }} 
+        -CAkey {{ CA_server.priv_key.dir }}/{{ CA_server.priv_key.file }} 
+        -passin pass:{{ CA_server.priv_key.pass }} -CAcreateserial 
+        -out {{ CA_server.certs_dir }}/{{ inventory_hostname }}/{{ key.file }}.{{ key.ext }}.tmp 
+        -days {{ key.exp }} 
+        -sha256 
+        -extfile {{ CA_server.certs_dir }}/{{ inventory_hostname }}/{{ key.file }}.ext
+      creates: "{{ CA_server.certs_dir }}/{{ inventory_hostname }}/{{ key.file }}.{{ key.ext }}.tmp"
+    delegate_to: "{{ CA_server.host }}"
+    register: Remove_signed
+
+  - name: Add CA pubkey to chain
+    shell:
+      cmd: >
+        cat 
+        {{ CA_server.certs_dir }}/{{ inventory_hostname }}/{{ key.file }}.{{ key.ext }}.tmp 
+        {{ CA_server.pub_key.dir }}/{{ CA_server.pub_key.file }} 
+        > {{ CA_server.certs_dir }}/{{ inventory_hostname }}/{{ key.file }}.{{ key.ext }} 
+      creates: "{{ CA_server.certs_dir }}/{{ inventory_hostname }}/{{ key.file }}.{{ key.ext }}"
+    delegate_to: "{{ CA_server.host }}"
+
+  - name: Pull keys from CA
+    fetch:
+      src: "{{ CA_server.certs_dir }}/{{ inventory_hostname }}/{{ key.file }}.{{ key.ext }}"
+      dest: "{{ crt_folder.path }}/{{ inventory_hostname }}/{{ key.file }}.{{ key.ext }}"
+      flat: yes
+    delegate_to: "{{ CA_server.host }}"
+
+  - name: Distribute signed key to client
+    copy:
+      src: "{{ crt_folder.path }}/{{ inventory_hostname }}/{{ key.file }}.{{ key.ext }}"
+      dest: "{{ key.dir }}/{{ key.file }}.{{ key.ext }}"
+      mode: 600
+      owner: root
+      group: root
+
+  always:
+  - name: Remove crt from CA host ( csr is kept for book keeping )
+    local_action:
+      module: ansible.builtin.file
+      path: "{{ CA_server.certs_dir }}/{{ inventory_hostname }}/{{ key.file }}.{{ key.ext }}"
+      state: absent
+    when: Remove_signed is defined
+    delegate_to: "{{ CA_server.host }}"
+
+  - name: Remove chainless crt from CA host ( csr is kept for book keeping )
+    local_action:
+      module: ansible.builtin.file
+      path: "{{ CA_server.certs_dir }}/{{ inventory_hostname }}/{{ key.file }}.{{ key.ext }}.tmp"
+      state: absent
+    when: Remove_signed is defined
+    delegate_to: "{{ CA_server.host }}"

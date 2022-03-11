@@ -3,12 +3,16 @@
 priv_key: 
   dir: /certs
   file: key.key
+  encryption_alg: RSA
+  pass: ChangeMe # or overwrite in a vars file
 CA_server:
   host: "{{ groups['ca'][0] }}" # CA server
   certs_dir: /certs                     # CA server's private key directory
   priv_key: 
     dir: /certs
     file: CA_key.key               # CA server's private key name
+    encryption_alg: RSA
+    pass: ChangeMe # or overwrite in a vars file
   pub_key:
     dir: /certs
     file: CA_key.pem 

@@ -1,3 +1,19 @@
 ---
 # defaults file for kanidm
 kanidm_port: 8443
+
+# The following is for the ssl_get_cert role
+priv_key: 
+  dir: /certs
+  file: key.pem
+  encryption_alg: RSA
+  pass: ""
+key_requests:
+  - name: crt for kanidm          # human readable name
+    dir: /certs                   # directory of key
+    file: chain                   # filename of key
+    ext: pem                      # extension of key, can't be csr
+    subj_string: "/CUS/ST=VA/L=Blacksburg/O=VT/OU=wireless@vt"
+    exp: 365                      # expiration in days
+    domains:
+      - kanidm.lan

@@ -40,14 +40,14 @@ db_path = "/data/kanidm.db"
 #   including but not limited to webauthn, oauth tokens, and more.
 #   If you change this value you *must* run `kanidmd domain_name_change` immediately
 #   after.
-domain = "idm.lan"
+domain = "kanidm.lan"
 #
 #   The origin for webauthn. This is the url to the server, with the port included if
 #   it is non-standard (any port except 443). This must match or be a descendent of the
 #   domain name you configure above. If these two items are not consistent, the server
 #   WILL refuse to start!
 # origin = "https://idm.example.com"
-origin = "https://idm.lan:{{ kanidm_port }}"
+origin = "https://kanidm.lan:{{ kanidm_port }}"
 #
 #   The role of this server. This affects features available and how replication may interact.
 #   Valid roles are:

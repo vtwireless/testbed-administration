@@ -1,5 +1,2 @@
 ---
 # handlers file for ssl_ca
-- name: Distribute CA keys
-  include_tasks: handler_distribute_ca.yml
-  listen: distribute ca
