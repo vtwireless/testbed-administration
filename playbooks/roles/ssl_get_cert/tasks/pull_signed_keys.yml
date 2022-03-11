@@ -1,6 +1,6 @@
 ---
 - debug: 
-  msg: "Processing {{ key.name }}..."
+  msg: "Signing key: {{ key.name }}..."
   
 - name: Make csr on host
   command:
