@@ -6,8 +6,8 @@
     state: directory
   register: crt_folder
 
-- name: Distribute signed keys to clients
-  include_tasks: distribute_signed_keys.yml
+- name: Pull signed keys from CA host
+  include_tasks: pull_signed_keys.yml
   creates: "{{ key.dir }}/{{ key.file }}.{{ key.ext }}"
   loop: "{{ key_requests }}"
   loop_control:
