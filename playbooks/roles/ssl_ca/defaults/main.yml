@@ -1,7 +1,11 @@
 ---
-# defaults file for ssl_ca
-CA_file: CA_key
-CA_dir: /certs
-encryption_alg: RSA
-ca_priv_pass: ChangeMe # or overwrite in a vars file
-subj_string: "/C=__/ST=__/L=___/O=__/OU=__"
+# defaults file for ssl_ca should be overridden elsewhere, not for production
+priv_key:
+  file: CA_key.key
+  dir: /certs
+  encryption_alg: RSA
+  pass: ChangeMe
+pub_key:
+  dir: /certs
+  file: CA_key.crt
+  subj_string: "/C=__/ST=__/L=___/O=__/OU=__"

@@ -1,6 +1,7 @@
 ---
 # defaults file for ssl_private
-CA_file: CA_key
-CA_dir: /certs
-encryption_alg: RSA
-ca_priv_pass: ChangeMe # or overwrite in a vars file
+priv_key:
+  file: CA_key.key
+  dir: /certs
+  encryption_alg: RSA
+  pass: ChangeMe # or overwrite in a vars file

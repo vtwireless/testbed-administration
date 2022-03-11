@@ -3,7 +3,7 @@
 - name: Add certs folder
   file:
     state: directory
-    path: "{{ CA_dir }}/"
+    path: "{{ priv_key.dir }}/"
     owner: root
     group: root
     mode: '0600'
@@ -15,9 +15,9 @@
       - "openssl"
       - "genpkey"
       - "-algorithm"
-      - "{{ encryption_alg }}"
+      - "{{ priv_key.encryption_alg }}"
       - "-out"
-      - "{{ CA_dir }}/{{ CA_file }}.key"
+      - "{{ priv_key.dir }}/{{ priv_key.file }}"
       - "-pass"
-      - "pass:{{ ca_priv_pass }}"
-    creates: "{{ CA_file }}.key"
+      - "pass:{{ priv_key.pass }}"
+    creates: "{{ priv_key.dir }}/{{ priv_key.file }}"

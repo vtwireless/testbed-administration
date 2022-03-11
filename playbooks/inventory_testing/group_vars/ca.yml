@@ -1,4 +1,10 @@
-CA_file: Corenet_CA_key
-CA_dir: /certs
-encryption_alg: ED25519
-subj_string: "/C=US/ST=VA/L=Blacksburg/O=VT/OU=corenet"
+priv_key_file: Corenet_CA_key
+priv_key_dir: /certs
+priv_key_pass: ChangeMe
+priv_key_encryption_alg: ED25519
+ca_key_subj_string: "/C=US/ST=VA/L=Blacksburg/O=VT/OU=corenet"
+signed_certs:
+  - name: crt for kanidm # human readable name
+    host: "{groups[kanidm][0]}" # host to send key to
+    dest: /certs/kanidm_chain.pem # destination on host
+    exp: 365 # expiration in days

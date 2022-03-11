@@ -1,7 +1,6 @@
 ---  
 - name: create public CA key
   command:
-    cmd: "openssl req -x509 -new -key {{ CA_dir }}/{{ CA_file }}.key -sha256 -days 1825 -out {{ CA_dir }}/{{ CA_file }}.pem -passin pass:{{ ca_priv_pass }} -subj {{ subj_string }} -batch"
-    creates: "{{ CA_file }}.pem"
-  notify: update keys
-
+    cmd: "openssl req -x509 -new -key {{ priv_key.dir }}/{{ priv_key.file }} -sha256 -days 1825 -out {{ pub_key.dir }}/{{ pub_key.file }}{% if priv_key.pass != '' %} -passin pass:{{ priv_key.pass }}{% endif %} -subj {{ pub_key.subj_string }} -batch"
+    creates: "{{ pub_key.dir }}/{{  pub_key.file }}"
+  notify: distribute ca

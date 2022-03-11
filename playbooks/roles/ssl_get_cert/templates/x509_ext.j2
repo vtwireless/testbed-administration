@@ -1,0 +1,10 @@
+{# TODO: #18 I don't really know what's going on here #}
+authorityKeyIdentifier=keyid,issuer
+basicConstraints=CA:FALSE
+keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
+subjectAltName = @alt_names
+
+[alt_names]
+{% for domain in key.domains %}
+DNS.{{ loop.index }} = {{ key.domain }} 
+{% endfor %}

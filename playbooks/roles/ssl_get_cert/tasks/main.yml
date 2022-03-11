@@ -1,0 +1,20 @@
+---
+# tasks file for ssl_get_cert
+- name: make tempfolder
+  tempfile:
+    prefix: crts
+    state: directory
+  register: crt_folder
+
+- name: Distribute signed keys to clients
+  include_tasks: distribute_signed_keys.yml
+  creates: "{{ key.dir }}/{{ key.file }}.{{ key.ext }}"
+  loop: "{{ key_requests }}"
+  loop_control:
+    loop_var: key
+
+- name: cleanup tempfolder
+  ansible.builtin.file:
+    path: "{{ crt_folder.path }}"
+    state: absent
+  when: crt_folder.path is defined
