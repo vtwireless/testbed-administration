@@ -1,0 +1,13 @@
+---
+- name: "distribute keys"
+  copy:
+    src: "{{ ca_pubkey_folder.path }}/{{ pub_key.file }}"
+    dest: "/etc/pki/ca-trust/source/anchors/{{ pub_key.file }}"
+    mode: 600
+    owner: root
+    group: root
+  delegate_to: "{{ client }}"
+- name: "update ca"
+  command:
+    cmd: update-ca-trust
+  delegate_to: "{{ client }}"

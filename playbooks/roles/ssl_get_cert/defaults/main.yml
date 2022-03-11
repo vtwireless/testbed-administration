@@ -1,0 +1,23 @@
+---
+# defaults file for ssl_get_cert
+priv_key: 
+  dir: /certs
+  file: key.key
+CA_server:
+  host: "{{ groups['ca'][0] }}" # CA server
+  certs_dir: /certs                     # CA server's private key directory
+  priv_key: 
+    dir: /certs
+    file: CA_key.key               # CA server's private key name
+  pub_key:
+    dir: /certs
+    file: CA_key.pem 
+key_requests:
+  - name: crt for example webpage # human readable name
+    dir: /certs                   # directory of key
+    file: key                     # filename of key
+    ext: crt                      # extension of key, can't be csr
+    subj_string: "/C_/ST=_/L=_/O=_/OU=_"
+    exp: 365                      # expiration in days
+    domains:
+      - www.example.com
