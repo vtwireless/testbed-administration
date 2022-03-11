@@ -1,5 +1,7 @@
 ---
-
+- debug: 
+  msg: "Processing {{ key.name }}..."
+  
 - name: Make csr on host
   command:
     cmd: "openssl req -new -key {{ priv_key.dir }}/{{ priv_key.file }}.csr -sha256 -days 1825 -out {{ key.dir }}/{{ key.file }}.csr{% if priv_key.pass != '' %} -passin pass:{{ priv_key.pass }}{% endif %} -subj {{ key.subj_string }} -batch"
