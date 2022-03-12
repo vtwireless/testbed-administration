@@ -1,0 +1,41 @@
+- name: Check that config exists
+  stat:
+    path: "{{kanidm_volume.volume.Mountpoint}}/server.toml"
+  register: stat_result
+
+- name: Template config with initial values
+  template:
+    src: "server.init.toml.j2"
+    dest: "{{kanidm_volume.volume.Mountpoint}}/server.toml"
+  when: not stat_result.stat.exists
+
+- name: Check if config needs updating
+  template:
+    src: "server.toml.j2"
+    dest: "{{kanidm_volume.volume.Mountpoint}}/server.toml"
+  check_mode: true
+  register: config_check
+
+# important that this happens before real values are added, due to nasty state in kanidm
+- name: Change kanidm domain name 
+  command:
+    cmd: > # no point in using the podman module here as this is closer to a command
+      podman run --rm -i -t 
+      -v kanidmd:/data docker.io/kanidm/server:latest
+      /sbin/kanidmd domain_name_change
+      -c /data/server.toml -n {{ kanidm_domain_name }}
+  when: config_check.changed
+  
+- name: Init kanidm admin
+  command:
+    cmd: > # no point in using the podman module here as this is closer to a command
+      podman run --rm -i -t 
+      -v kanidmd:/data docker.io/kanidm/server:latest 
+      /sbin/kanidmd recover_account 
+      -c /data/server.toml -n admin
+  when: not stat_result.stat.exists
+
+- name: Update config to match new domain name
+  template:
+    src: "server.toml.j2"
+    dest: "{{kanidm_volume.volume.Mountpoint}}/server.toml"

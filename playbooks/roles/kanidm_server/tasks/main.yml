@@ -11,7 +11,7 @@
 - name: create kanidm volume
   containers.podman.podman_volume:
     state: present
-    name: kanidm
+    name: kanidmd
   register: kanidm_volume
 - name: copy kanidm key into volume
   copy:
@@ -23,3 +23,6 @@
     src: "/certs/chain.pem"
     dest: "{{kanidm_volume.volume.Mountpoint}}/chain.pem"
     remote_src: yes
+
+- name: make configuration file, perform initial setup if needed
+  include_tasks: change_server_toml.yml

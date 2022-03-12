@@ -1,7 +1,7 @@
 ---
 # defaults file for kanidm
 kanidm_port: 8443
-
+kanidm_domain_name: kanidm.lan
 # The following is for the ssl_get_cert role
 priv_key: 
   dir: /certs
@@ -13,7 +13,7 @@ key_requests:
     dir: /certs                   # directory of key
     file: chain                   # filename of key
     ext: pem                      # extension of key, can't be csr
-    subj_string: "/CUS/ST=VA/L=Blacksburg/O=VT/OU=wireless@vt"
+    subj_string: "/C=US/ST=VA/L=Blacksburg/O=VT/OU=wireless@vt" # todo #19 replace subj strings with conf files
     exp: 365                      # expiration in days
     domains:
       - kanidm.lan
