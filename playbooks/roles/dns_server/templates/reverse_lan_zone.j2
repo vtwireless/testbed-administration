@@ -1,0 +1,17 @@
+; Cornet reverse zone for .lan
+;
+@	IN	SOA	ns.lan.	mattjs.vt.edu. ( {# Todo: change this to an email that won't be useless when I leave #}
+	2022041501 ; sn = serial number, used for keeping zones in sync, tradition is yyymmddss where s is sequence, not second
+	12H ; ref = time between refresh, set to twelve hours
+	15M ; ret = time before retrying sync if failed
+	2W ; ex = expiry
+	3H ; I don't really understand this one 
+) ; {# see https://www.zytrax.com/books/dns/ch8/soa.html for more info #}
+
+{% set ip_reverse = '.'.join((sub_nets.lan.split('/')[0].split('.')|reverse)[1:]) %}
+{{ip_reverse}}.in-addr.arpa.	IN	NS	ns.lan. ; set the name server for reverse dns
+
+{# see https://philchen.com/2007/04/04/configuring-reverse-dns #}
+{% for host, options in hostvars.items() %}
+{{ options.ip_for_dns.split('.')[-1] }}	IN	PTR	{{ host }}.lan. ; 
+{% endfor %}

@@ -1,10 +1,9 @@
 ---
 - hosts: gateway
-  become: yes
+  become: true
   roles:
     - firewall_router
-    - ssh
-    - add_users
     - dns_server
     - ntp_server
     - ssl_ca
+    - kanidm_client

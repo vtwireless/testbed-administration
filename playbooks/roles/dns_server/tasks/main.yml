@@ -27,6 +27,15 @@
     group: named
     mode: '0600'
   notify: dns up
+
+- name: Update reverse lan.zone
+  template:
+    src: reverse_lan_zone.j2
+    dest: "{% set ip_reverse = '.'.join((sub_nets.lan.split('/')[0].split('.')|reverse)[1:]) %}/var/named/{{ip_reverse}}.in-addr.arpa"
+    owner: named
+    group: named
+    mode: '0600'
+  notify: dns up
     
 - name: "Make sure bind is enabled and running"
   service:
