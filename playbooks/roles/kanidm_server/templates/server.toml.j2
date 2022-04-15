@@ -1,6 +1,6 @@
 #   The webserver bind address. Will use HTTPS if tls_* is provided.
 #   Defaults to "127.0.0.1:8443"
-bindaddress = "127.0.0.1:{{ kanidm_port }}"
+bindaddress = "0.0.0.0:{{ kanidm_port }}"
 #
 #   The read-only ldap server bind address. The server will use LDAPS if tls_* is provided.
 #   Defaults to "" (disabled)
@@ -24,12 +24,12 @@ db_path = "/data/kanidm.db"
 # db_arc_size = 2048
 #
 #   TLS chain and key in pem format. Both must be commented, or both must be present
-# tls_chain = "/data/chain.pem"
-# tls_key = "/data/key.pem"
+tls_chain = "/data/chain.pem"
+tls_key = "/data/key.pem"
 #
 #   The log level of the server. May be default, verbose, perfbasic, perffull
 #   Defaults to "default"
-# log_level = "default"
+# log_level = "verbose"
 #
 #   The DNS domain name of the server. This is used in a number of security-critical contexts
 #   such as webauthn, so it *must* match your DNS hostname. It is what is used to create

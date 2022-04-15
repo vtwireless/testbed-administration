@@ -1,0 +1,18 @@
+---
+# tasks file for kanidm_client
+- name: Add repo for kanidm
+  yum_repository:
+    name: network_idm
+    description: kanidm idm
+    baseurl: https://download.opensuse.org/repositories/network:/idm/CentOS_9_Stream/
+    gpgkey: https://download.opensuse.org/repositories/network:/idm/CentOS_9_Stream/repodata/repomd.xml.key
+- name: install kanidm_client tools
+  dnf:
+    name: kanidm-clients
+    state: latest
+
+- name: make config for kanidm-clients
+  template:
+    src: config.j2
+    dest: /etc/kanidm/config
+    mode: 644

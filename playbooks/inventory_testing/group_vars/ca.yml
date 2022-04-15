@@ -2,7 +2,7 @@ priv_key:
   file: Corenet_CA_key.key
   dir: /certs
   pass: ChangeMe
-  encryption_alg: ED25519
+  encryption_alg: RSA
 pub_key:
   dir: /certs
   file: Corenet_CA_key.crt
