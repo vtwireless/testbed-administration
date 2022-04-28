@@ -12,17 +12,17 @@ for role in roles:
 	deps_string = ''.join([f"- [{dep}]({dep})  \n" for dep in deps])
 
 	md_file = docs_folder/f'{role.name}.md'
-	md_file.write_text(dedent(f"""
-	This was automatically generated using our `mkdocs.py` script using information from the `main.yml` file inside the role's directory  
-	
-	## Author: {yam['galaxy_info']['author']}  
+	md_file.write_text(f"""
+>This was automatically generated using our `mkdocs.py` script using information from the `main.yml` file inside the role's directory  
 
-	# Description  
-	{yam['galaxy_info']['description']}\n  
+## Author: {yam['galaxy_info']['author']}  
 
-	# Dependencies:
-	{deps_string if deps_string else 'None'}
-	""").strip())
+# Description  
+{yam['galaxy_info']['description']}\n  
+
+# Dependencies:
+{deps_string if deps_string else 'None'}
+""".strip())
 
 vte = Path("./actions/docs/virtual-test-environment.md")
 
