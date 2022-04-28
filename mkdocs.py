@@ -9,14 +9,17 @@ for role in roles:
 	yam = yaml.safe_load(f.read_text())
 	docs_folder.mkdir(exist_ok=True)
 	deps = frozenset([dep['role'] for dep in yam['dependencies'] if dep['role'] in [role.name for role in roles]])
-	deps_string = '\n'.join(deps)
+	deps_string = '\n  '.join(deps)
 
 	md_file = docs_folder/f'{role.name}.md'
 	md_file.write_text(dedent(f"""
 	This was automatically generated using our mkdocs.py script using information from the `main.yml` file inside the role's directory  
+	
 	## Author: {yam['galaxy_info']['author']}  
-	# Description
-	{yam['galaxy_info']['description']}
+	
+	# Description  
+	{yam['galaxy_info']['description']}\n  
+
 	# Dependencies:
 	{deps_string if deps_string else 'None'}
 	""").strip())
