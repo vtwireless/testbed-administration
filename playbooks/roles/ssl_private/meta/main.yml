@@ -1,7 +1,19 @@
 galaxy_info:
-  author: your name
-  description: your role description
-  company: your company (optional)
+  author: Matthew Salerno
+  description: >
+    Creates a private ssl key. It uses the following variables:
+      
+    - `priv_key`
+      
+      - `dir` private key's directory
+        
+      - `file` private key's name
+        
+      - `encryption_alg` The encryption algorithm used for the private key
+
+      - `pass` The password for the private key, this should be in an ansible vault
+
+  company: vtwireless
 
   # If the issue tracker for your role is not on github, uncomment the
   # next line and provide a value

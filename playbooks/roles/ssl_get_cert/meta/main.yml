@@ -1,7 +1,43 @@
 galaxy_info:
-  author: your name
-  description: your role description
-  company: your company (optional)
+  author: Matthew Salerno
+  description: >
+    This role gets a signed ssl cert file from the local Micro CA for use on the local net.
+    Currently not handled is renewing certs when they expire, this should be simple to
+    implement but is not yet done. It takes quite a few variables:
+      
+    - `priv_key`
+
+      - `dir` Requesting server's private key directory
+
+      - `file` Requesting server's private key name
+
+      - `encryption_alg`
+
+      - `pass` The encryption algorithm used for the requesting server's private key
+
+    - `CA_server`
+
+      - `host` Hostname of the CA server as understood by ansible (ip or alias)
+
+      - `certs_dir` CA server's certs directory
+
+      - `priv_key`
+
+        - `dir`  CA server's private key directory (usually, but not allways == `certs_dir`)
+
+        - `file` CA server's private key name
+
+        - `encryption_alg` The encryption algorithm used for the CA server's private key
+
+        - `pass` The password for the private key, this should be in an ansible vault
+
+      - `pub_key`
+
+        - `dir` CA server's public key directory (usually, but not allways == `certs_dir`)
+
+        - `file` CA server's public key name
+
+  company: vtwireless
 
   # If the issue tracker for your role is not on github, uncomment the
   # next line and provide a value

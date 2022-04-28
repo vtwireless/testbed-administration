@@ -1,7 +1,11 @@
 galaxy_info:
-  author: your name
-  description: your role description
-  company: your company (optional)
+  author: Matthew Salerno
+  description: >
+    Sets up and starts the kanidm server. Kanidm is an identity management framework.
+    It keeps logins and ssh (and more if we wanted) synced across machines.
+    It is in active developement and will likely be a pain point so pay
+    attention to it!
+  company: vtwireless
 
   # If the issue tracker for your role is not on github, uncomment the
   # next line and provide a value

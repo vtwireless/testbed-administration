@@ -1,7 +1,11 @@
 galaxy_info:
-  author: your name
-  description: your role description
-  company: your company (optional)
+  author: Matthew Salerno
+  description: >
+    This sets up a dns server using bind. It automatically adds names and reverse lookups
+    using the inventory file. adding groups to the `dns_advertised_groups` variable will 
+    create aliases for those groups to the machine inside it, and append numbers to the 
+    aliases if there are multiple members in the group. 
+  company: vtwireless
 
   # If the issue tracker for your role is not on github, uncomment the
   # next line and provide a value
