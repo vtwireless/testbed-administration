@@ -16,10 +16,15 @@ for role in roles:
 	This was automatically generated using our mkdocs.py script using information from the `main.yml` file inside the role's directory  
 	
 	## Author: {yam['galaxy_info']['author']}  
-	
+
 	# Description  
 	{yam['galaxy_info']['description']}\n  
 
 	# Dependencies:
 	{deps_string if deps_string else 'None'}
 	""").strip())
+
+vte = Path("./actions/docs/virtual-test-environment.md")
+
+vte_file = docs_folder/'virtual-test-environment.md'
+vte_file.write_text(vte.read_text()+'\n- '+'\n- '.join([f"[{role.name.replace('_', ' ').upper()}]({role.name})" for role in roles]))
