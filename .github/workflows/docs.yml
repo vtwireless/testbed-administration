@@ -30,4 +30,9 @@ jobs:
 
       - uses: docker://decathlon/wiki-page-creator-action:latest
         env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+          ACTION_MAIL: mattjs@vt.edu
+          ACTION_NAME: matthew-salerno
+          OWNER: vtwireless
+          REPO_NAME: testbed-administration
           MD_FOLDER: .generated_docs
