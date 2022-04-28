@@ -2,7 +2,7 @@ galaxy_info:
   author: Matthew Salerno
   description: >
     This role handles setting up a Micro CA to handle local network ssl.
-    It depends on (ssl_private)[ssl_private] in order to make the private
+    It depends on [ssl_private](ssl_private) in order to make the private
     key for the CA. It then uses cursed delegation to distribute the public
     key to all machines in the ssl_client group.  
   company: vtwireless
