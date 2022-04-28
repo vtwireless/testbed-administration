@@ -4,3 +4,4 @@ password.txt
 .vscode/
 inventory_production/
 */.tmp/
+.generated_docs/
