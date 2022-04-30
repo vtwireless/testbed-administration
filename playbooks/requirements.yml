@@ -2,7 +2,4 @@
 roles: []
 collections:
   - name: ansible.posix
-  #- name: containers.podman #! uncomment when a new version gets pushed
-  - name: https://github.com/containers/ansible-podman-collections.git
-    type: git
-    version: 81f20befb2fd7fe8614c63e3f930eec95500899f
+  - name: containers.podman

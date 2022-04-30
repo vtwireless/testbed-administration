@@ -40,7 +40,6 @@
       - "{{ kanidm_port }}:{{ kanidm_port }}"
     volume:
       - "{{ kanidm_volume.volume.Mountpoint }}:/data"
-    privileged: yes
     generate_systemd:
       path: /etc/systemd/system/
       restart_policy: on-failure

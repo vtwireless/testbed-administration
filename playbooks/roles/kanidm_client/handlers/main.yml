@@ -1,2 +1,4 @@
 ---
 # handlers file for kanidm_client
+- name: Update authselect
+  command: authselect select custom/kanidm

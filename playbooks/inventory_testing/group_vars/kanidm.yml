@@ -5,7 +5,7 @@ kanidm_domain_name: kanidm.lan
 priv_key: 
   dir: /certs
   file: key.pem
-  encryption_alg: RSA
+  encryption_alg: ED25519
   pass: ""
 CA_server:
   host: "{{ groups['ca'][0] }}" # CA server

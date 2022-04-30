@@ -10,9 +10,12 @@ AddressFamily inet
 # override to prevent legacy folder being supported
 AuthorizedKeysFile .ssh/authorized_keys
 
-# no passwords
+# Get rid of all the bad things
 {# I have a few choice words for anyone who dares change this one #}
 PasswordAuthentication no
+PermitEmptyPasswords no
+GSSAPIAuthentication no
+KerberosAuthentication no
 
 # we just don't need this
 X11Forwarding no
@@ -36,3 +39,10 @@ MACs umac-128-etm@openssh.com,hmac-sha2-512-etm@openssh.com
 
 # allows sftp
 Subsystem sftp internal-sftp
+
+
+# Settings for kanidm
+PubkeyAuthentication yes
+UsePAM yes
+AuthorizedKeysCommand /usr/bin/kanidm_ssh_authorizedkeys %u
+AuthorizedKeysCommandUser nobody
