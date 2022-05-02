@@ -3,6 +3,7 @@
     path: "{{kanidm_volume.volume.Mountpoint}}/server.toml"
   register: stat_result
 
+#* this won't be needed for kanidm >= alpha 1.1.0-alpha8
 - name: Template config with initial values
   template:
     src: "server.init.toml.j2"
