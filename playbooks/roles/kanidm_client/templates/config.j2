@@ -1,4 +1,4 @@
 uri = "https://kanidm.lan:{{ hostvars[groups['kanidm'][0]].kanidm_port }}"
 verify_ca = true
 verify_hostnames = true
-ca_path = "/etc/pki/ca-trust/source/anchors/{{ hostvars[groups['ca'][0]].pub_key.file }}"
+ca_path = "/etc/ssl/certs/ca-bundle.crt"

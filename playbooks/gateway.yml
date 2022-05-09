@@ -6,4 +6,5 @@
     - dns_server
     - ntp_server
     - ssl_ca
+    - ssh
     - kanidm_client

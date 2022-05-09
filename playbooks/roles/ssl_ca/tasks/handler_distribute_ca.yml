@@ -16,7 +16,7 @@
 
   - name: Push keys to clients
     include_tasks: distribute_ca_key_loop.yml
-    loop: "{{ groups.ssl_client }}"
+    loop: "{{ groups.all }}"
     loop_control:
       loop_var: client
 

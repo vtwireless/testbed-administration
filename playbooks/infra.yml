@@ -3,4 +3,5 @@
   roles:
     - dns_client
     - ntp_client
+    - ssh
     - kanidm_client

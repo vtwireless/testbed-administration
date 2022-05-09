@@ -4,4 +4,5 @@
     - dns_client
     - ntp_client
     - kanidm_server
+    - ssh
     - kanidm_client

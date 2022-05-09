@@ -6,9 +6,11 @@
     description: kanidm idm
     baseurl: https://download.opensuse.org/repositories/network:/idm/CentOS_9_Stream/
     gpgkey: https://download.opensuse.org/repositories/network:/idm/CentOS_9_Stream/repodata/repomd.xml.key
-- name: install kanidm_client tools
+- name: install kanidm client tools and unix daemon
   dnf:
-    name: kanidm-clients
+    name:
+      - kanidm-clients
+      - kanidm-unixd-clients
     state: latest
 
 - name: make config for kanidm-clients
@@ -16,3 +18,50 @@
     src: config.j2
     dest: /etc/kanidm/config
     mode: 644
+
+- name: make unixd config for kanidm-clients
+  template:
+    src: unixd.j2
+    dest: /etc/kanidm/unixd
+    mode: 644
+
+- name: "Make sure kanidm unix daemon is running"
+  service:
+    name: kanidm-unixd
+    enabled: yes
+    state: started
+
+- name: "Make sure kanidm privileged tasks daemon is running"
+  service:
+    name: kanidm-unixd-tasks
+    enabled: yes
+    state: started
+
+- name: Create authselect profile for kanidm
+  block:
+    - name: Create authselect folder
+      command: authselect create-profile kanidm -b sssd
+      args:
+        creates: /etc/authselect/custom/kanidm
+      notify: Update authselect
+
+    - name: configure nsswitch
+      template:
+        src: nsswitch.conf.j2
+        dest: /etc/authselect/custom/kanidm/nsswitch.conf
+        mode: 644
+      notify: Update authselect
+
+    - name: configure PAM
+      block:
+      - template:
+          src: password-auth.j2
+          dest: /etc/authselect/custom/kanidm/password-auth
+          mode: 644
+        notify: Update authselect
+
+      - template:
+          src: system-auth.j2
+          dest: /etc/authselect/custom/kanidm/system-auth
+          mode: 644
+        notify: Update authselect

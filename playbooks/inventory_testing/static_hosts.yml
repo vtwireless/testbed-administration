@@ -2,24 +2,26 @@ lan:
   hosts:
     infra:
     infra-2:
+
 dmz:
   hosts:
+
 router:
   hosts: 
     gateway:
+
 dns:
   hosts:
     gateway:
+
 ntp:
   hosts:
     gateway:
+
 ca:
   hosts:
     gateway:
-ssl_client:
-  hosts:
-    infra:
-    infra-2:
+
 kanidm:
   hosts:
     infra-2:
