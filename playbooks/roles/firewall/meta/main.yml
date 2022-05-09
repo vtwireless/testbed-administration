@@ -1,7 +1,20 @@
 galaxy_info:
   author: Matthew Salerno
   description: >
-    This manages a firewall using firewalld.
+    This manages a firewall using firewalld. Takes a dictionary of firewall rules to apply. 
+    These are expected to be provided by roles in their `meta/main.yml` file. Ansible will
+    flatten them into a single dictionary for you. An example:
+    ```yaml
+    firewall_rules:
+      zone: internal
+        - name: my_awesome_minecraft_server
+          port: 25565
+        - name: dns 
+          service: dns
+      zone: dmz
+        - name: my_custom_server
+          port: 25555
+    ```
   company: vtwireless
 
   # If the issue tracker for your role is not on github, uncomment the
@@ -41,6 +54,12 @@ galaxy_info:
     # NOTE: A tag is limited to a single word comprised of alphanumeric characters.
     #       Maximum 20 tags per role.
 
-dependencies: []
+dependencies: 
+  - role: packages
+    vars:
+      packages:
+      - name: firewall
+        default: firewalld
+        RedHat:  firewalld
   # List your role dependencies here, one per line. Be sure to remove the '[]' above,
   # if you add dependencies to this list.

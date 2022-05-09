@@ -1,2 +1,5 @@
 ---
 # handlers file for packages
+- name: reboot system
+  reboot:
+  when: (reboot_after_install is defined) and reboot_after_install

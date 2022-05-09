@@ -7,7 +7,7 @@ bindaddress = "127.0.0.1:{{ kanidm_port }}"
 # ldapbindaddress = "[::]:3636"
 #
 #   The path to the kanidm database.
-db_path = "/data/kanidm.db"
+db_path = "/data/db/kanidm.db"
 #
 #   If you have a known filesystem, kanidm can tune sqlite to match. Valid choices are:
 #   [zfs, other]
@@ -24,8 +24,8 @@ db_path = "/data/kanidm.db"
 # db_arc_size = 2048
 #
 #   TLS chain and key in pem format. Both must be commented, or both must be present
-# tls_chain = "/data/chain.pem"
-# tls_key = "/data/key.pem"
+tls_chain = "/data/chain.pem"
+tls_key = "/data/key.pem"
 #
 #   The log level of the server. May be default, verbose, perfbasic, perffull
 #   Defaults to "default"

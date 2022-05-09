@@ -2,7 +2,7 @@
 - hosts: gateway
   become: true
   roles:
-    - firewall_router
+    - router
     - dns_server
     - ntp_server
     - ssl_ca

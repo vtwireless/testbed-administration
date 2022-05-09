@@ -4,3 +4,4 @@ sub_nets:
   dmz: "172.17.0.0/16"
   wan: "192.168.56.0/24"
 vagrant: true
+reboot_after_install: true

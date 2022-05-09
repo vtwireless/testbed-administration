@@ -1,6 +1,12 @@
 ---
 # tasks file for firewall_router
 #setup
+- name: "Make sure firewalld is enabled and running"
+  service:
+    name: firewalld
+    enabled: yes
+    state: started
+    
 - name: "Get device for wan network"
   shell: "ip route | grep {{ public_nets.wan }} | sed 's/^.*dev \\([^ ]*\\).*$/\\1/g'"
   register: wan_dev
