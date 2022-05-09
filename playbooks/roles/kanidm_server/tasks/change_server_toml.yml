@@ -1,37 +1,50 @@
 - name: Check that config exists
   stat:
-    path: "{{kanidm_volume.volume.Mountpoint}}/server.toml"
+    path: "/var/kanidm/server.toml"
   register: stat_result
 
 #* this won't be needed for kanidm >= alpha 1.1.0-alpha8
 - name: Template config with initial values
   template:
     src: "server.init.toml.j2"
-    dest: "{{kanidm_volume.volume.Mountpoint}}/server.toml"
+    dest: "/var/kanidm/server.toml"
+    mode: '0640'
+    group: kanidm
+    owner: root
+
   when: not stat_result.stat.exists
 
 - name: Check if config needs updating
   template:
     src: "server.toml.j2"
-    dest: "{{kanidm_volume.volume.Mountpoint}}/server.toml"
+    dest: "/var/kanidm/server.toml"
+    mode: '0640'
+    group: kanidm
+    owner: root
   check_mode: true
   register: config_check
+  
 
-- name: Change domain name 
+- name: Change config
   block:
 # important that this happens before real values are added, due to nasty state in kanidm
-  - name: Change kanidm domain name 
+  - name: Change kanidm config
     command:
       cmd: > # no point in using the podman module here as this is closer to a command
-        podman run --rm -i -t 
-        -v kanidmd:/data docker.io/kanidm/server:latest
+        podman run --rm -i -t
+        -u {{kanidm_user.uid}}:{{kanidm_group.gid}}
+        --mount type=bind,source=/var/kanidm,destination=/data
+        docker.io/kanidm/server:latest
         /sbin/kanidmd domain_name_change
         -c /data/server.toml -n {{ kanidm_domain_name }}
 
-  - name: Update config to match new domain name
+  - name: Update config to match new config
     template:
       src: "server.toml.j2"
-      dest: "{{kanidm_volume.volume.Mountpoint}}/server.toml"
+      dest: "/var/kanidm/server.toml"
+      mode: '0640'
+      group: kanidm
+      owner: root
   
   when: config_check.changed
 
@@ -41,8 +54,9 @@
   - name: Init kanidm admin
     command:
       cmd: > # no point in using the podman module here as this is closer to a command
-        podman run --rm -i -t 
-        -v kanidmd:/data docker.io/kanidm/server:latest 
+        podman run --rm -i -t -u {{kanidm_user.uid}}:{{kanidm_group.gid}}
+        --mount type=bind,source=/var/kanidm,destination=/data
+        docker.io/kanidm/server:latest 
         /sbin/kanidmd recover_account 
         -c /data/server.toml -n admin
     register: kanidm_admin_reset

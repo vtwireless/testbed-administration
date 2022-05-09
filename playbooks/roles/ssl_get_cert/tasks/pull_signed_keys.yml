@@ -27,7 +27,7 @@
     copy:
       src: "{{ crt_folder.path }}/{{ inventory_hostname }}"
       dest: "{{ CA_server.certs_dir }}/"
-      mode: 600
+      mode: '600'
       owner: root
       group: root
     delegate_to: "{{ CA_server.host }}"
@@ -36,7 +36,7 @@
     template:
       src: "x509_ext.j2"
       dest: "{{ CA_server.certs_dir }}/{{ inventory_hostname }}/{{ key.file }}.ext"
-      mode: 600
+      mode: '600'
       owner: root
       group: root
     delegate_to: "{{ CA_server.host }}"
@@ -78,7 +78,7 @@
     copy:
       src: "{{ crt_folder.path }}/{{ inventory_hostname }}/{{ key.file }}.{{ key.ext }}"
       dest: "{{ key.dir }}/{{ key.file }}.{{ key.ext }}"
-      mode: 600
+      mode: '600'
       owner: root
       group: root
 
