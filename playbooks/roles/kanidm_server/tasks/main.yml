@@ -19,7 +19,7 @@
     state: present
     system: yes
     create_home: no
-    group: kanidm
+    group: "{{kanidm_group.gid}}"
   register: kanidm_user
 
 
@@ -38,10 +38,18 @@
 - name: create kanidm "volume"
   ansible.builtin.file:
     state: directory
-    path: "/var/kanidm"
-    owner: kanidm
-    group: kanidm
+    path: "/var/db/kanidm"
+    owner: "{{kanidm_user.uid}}"
+    group: "{{kanidm_group.gid}}"
     mode: '0770'
+
+- name: create kanidm db folder
+  ansible.builtin.file:
+    state: directory
+    path: "/var/db/kanidm/db"
+    owner: "{{kanidm_user.uid}}"
+    group: "{{kanidm_group.gid}}"
+    mode: '0750'
 
 - name: Copy kanidm key into volume
   copy:
@@ -53,7 +61,7 @@
   file:
     path: "/var/kanidm/key.pem"
     owner: root
-    group: kanidm
+    group: "{{kanidm_group.gid}}"
     mode: '0640'
 
 - name: Copy kanidm chain into volume
@@ -66,7 +74,7 @@
   ansible.builtin.file:
     path: "/var/kanidm/chain.pem"
     owner: root
-    group: kanidm
+    group: "{{kanidm_group.gid}}"
     mode: '0640'
 
 - name: Make configuration file, perform initial setup if needed
