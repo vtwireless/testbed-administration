@@ -5,7 +5,7 @@ AddressFamily inet
 
 # listen only on the local network
 {# get the local network from vars TODO: re-enable after testing#}
-# ListenAddress {{ lan_ip }}:22
+# ListenAddress {{ int_nets.lan }}:22
 
 # override to prevent legacy folder being supported
 AuthorizedKeysFile .ssh/authorized_keys

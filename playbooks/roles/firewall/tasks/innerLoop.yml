@@ -9,7 +9,7 @@
 - name: add ports
   firewalld:
     zone: "{{zone.key}}"
-    service: "{{item.port}}"
+    port: "{{item.port}}"
     permanent: yes
     immediate: yes
     state: "{{item.state}}"

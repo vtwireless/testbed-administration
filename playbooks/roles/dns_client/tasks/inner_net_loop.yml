@@ -1,0 +1,15 @@
+---
+- name: NO TOUCH DNS
+  lineinfile:
+    name: "{{ file }}"
+    line: "^IPADDR={{item.1}}"
+    state: present
+  check_mode: true
+  register: conf
+
+- name: leave my dns alone!
+  lineinfile:
+      path: "{{ file }}"
+      regexp: "^DNS{{item.0+1}}="
+      line: "DNS{{item.0+1}}={{item.1}}"
+  when: (conf is not changed) or (conf is not failed)

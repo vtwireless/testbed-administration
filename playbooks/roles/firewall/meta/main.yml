@@ -6,14 +6,14 @@ galaxy_info:
     flatten them into a single dictionary for you. An example:
     ```yaml
     firewall_rules:
-      zone: internal
-        - name: my_awesome_minecraft_server
-          port: 25565
-        - name: dns 
-          service: dns
-      zone: dmz
-        - name: my_custom_server
-          port: 25555
+      internal:
+      - name: my_awesome_minecraft_server
+        port: '25565/tcp'
+      - name: dns 
+        service: dns
+      dmz:
+      - name: my_custom_server
+        port: '25555/udp'
     ```
   company: vtwireless
 
