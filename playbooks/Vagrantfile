@@ -2,8 +2,8 @@
 # vi: set ft=ruby :
 
 # as per https://stackoverflow.com/questions/16708917/how-do-i-include-variables-in-my-vagrantfile
+VAGRANT_EXPERIMENTAL="dependency_provisioners"
 require 'yaml'
-
 current_dir    = File.dirname(File.expand_path(__FILE__))
 # settings file is shared with ansible inventory, to keep things DRY
 settings = {}
@@ -18,10 +18,20 @@ SCRIPT
 
 Vagrant.configure("2") do |config|
 	# default options for all machines
-	config.vm.box = "boxomatic/centos-stream-9"
-	config.ssh.insert_key = true
-	# Host specific configuration:
+	config.vm.box = "eurolinux-vagrant/centos-stream-9"
+	config.vm.provider :libvirt do |libvirt|
+		libvirt.qemu_use_session = false
+	end
 
+	config.trigger.after :up do |t|
+		t.ruby do |env, machine|
+			puts "Machine #{machine.name} up"
+			files = Dir.glob(File.join('.vagrant', 'machines', "#{machine.name}", '*', 'private_key'))
+			FileUtils.cp(files[0], File.join('keys',"#{machine.name}"))
+		end
+	end
+	
+	# Host specific configuration:
 	# iterate over every vm in the config
 	settings.each do |vm_name, vm_settings|
 		config.vm.define vm_name do |vm_config|
@@ -31,30 +41,55 @@ Vagrant.configure("2") do |config|
 			vm_config.vm.hostname = vm_name
 			# iterate over int nets and add them
 			vm_settings["int_nets"].each do |net_name, net_ip|
-				vm_config.vm.network "private_network", ip: net_ip,
-					virtualbox__intnet: true,
-					name: net_name
+				vm_config.vm.network :private_network,
+					:ip => net_ip,
+					:libvirt__network_name => net_name,
+					:libvirt__dhcp_enabled => false,
+					:libvirt__forward_mode => "veryisolated",
+					:virtualbox__intnet => true,
+					:name => net_name
 			end
 			# iterate over public nets and add them
 			vm_settings["public_nets"].each do |net_name, net_ip|
-				vm_config.vm.network "private_network", ip: net_ip
+				vm_config.vm.network :private_network,
+					:ip => net_ip,
+					:libvirt__network_name => net_name,
+					:libvirt__dhcp_enabled => false,
+					:libvirt__forward_mode => "veryisolated",
+					:virtualbox__intnet => true,
+					:name => net_name
 			end
 			# set up the net that the ansible vm will use ( only for when testing in vagrant )
-			vm_config.vm.network "private_network", ip: vm_settings["ansible_host"]
+			vm_config.vm.network :private_network,
+				:ip => vm_settings["ansible_host"],
+				:libvirt__network_name => "ansible",
+				:name => "ansible"
+			vm_config.ssh.insert_key = true
+			# add empty provisioning step to order machine provisioning
+			vm_config.vm.provision "empty_depend_#{vm_name}", type: "shell", before: "install ansible", inline: "echo #{vm_name} ready"
 		end
 	end
 
 	config.vm.define "provisioner" do |prov|
+		prov.vm.network :private_network,
+			:ip => "172.31.0.2",
+			:libvirt__network_name => "ansible",
+			:name => "ansible"
+
+		prov.ssh.insert_key = true
 		prov.vm.hostname = "ansible.provisioner"
+		prov.vm.synced_folder "./", "/vagrant"
 		# Configure ansible provisioning here, inventory file is also used by vagrant
 		# this is inside the last vm so setup is done once at the end,
 		# also using a vm for ansible means this will work on windows
-		prov.vm.provision "shell", inline: $install_ansible
-		prov.vm.provision :ansible_local do |ansible|
+		prov.vm.provision "install ansible", type: "shell", before: "copy keys", inline: $install_ansible
+		prov.vm.provision "copy keys", type: "file", before: "run ansible", source: "./keys", destination: "~/keys"
+		prov.vm.provision "run ansible", after: :all, type: "ansible_local" do |ansible|
 			ansible.limit          = "all"
 			ansible.playbook       = "playbook.yml"
 			ansible.config_file    = "ansible_vagrant.cfg"
 			ansible.inventory_path = "inventory_testing"
+			ansible.verbose        = true
 			ansible.install        = false # currently auto install is broken with centos 9, maunually install with the above shell provision
 		end
 	end

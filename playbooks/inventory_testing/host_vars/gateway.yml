@@ -1,5 +1,5 @@
 ansible_host: 172.31.0.20 # used by ansible only in vagrant (set to another net so vagrant won't lock itself out)
-ansible_ssh_private_key_file: "/vagrant/.vagrant/machines/gateway/virtualbox/private_key" # used by ansible
+ansible_ssh_private_key_file: "/home/vagrant/keys/{{inventory_hostname}}" # used by ansible
 ip_for_dns: 172.16.0.1 # used by ansible
 int_nets: # used by ansible only for router
   lan: 172.16.0.1 

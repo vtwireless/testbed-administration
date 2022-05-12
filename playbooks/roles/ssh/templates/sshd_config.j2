@@ -4,8 +4,10 @@
 AddressFamily inet
 
 # listen only on the local network
-{# get the local network from vars TODO: re-enable after testing#}
-# ListenAddress {{ int_nets.lan }}:22
+{# get the local network from vars #}
+{% if not vagrant %}
+ListenAddress {{ int_nets.lan }}:22
+{% endif %}
 
 # override to prevent legacy folder being supported
 AuthorizedKeysFile .ssh/authorized_keys

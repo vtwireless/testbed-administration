@@ -7,7 +7,7 @@
       module: ansible.builtin.tempfile
       prefix: crts
       state: directory
-      path: "{{ playbook_dir }}/.tmp"
+      path: "{{lookup('config', 'DEFAULT_LOCAL_TMP')}}"
     changed_when: false
     register: crt_folder
 
@@ -17,11 +17,11 @@
     loop_control:
       loop_var: key
 
-  always:
-  - name: cleanup tempfolder
-    local_action:
-      module: ansible.builtin.file
-      path: "{{ crt_folder.path }}"
-      state: absent
-    changed_when: false
-    when: crt_folder.path is defined
+  # always:
+  # - name: cleanup tempfolder
+  #   local_action:
+  #     module: ansible.builtin.file
+  #     path: "{{ crt_folder.path }}"
+  #     state: absent
+  #   changed_when: false
+  #   when: crt_folder.path is defined

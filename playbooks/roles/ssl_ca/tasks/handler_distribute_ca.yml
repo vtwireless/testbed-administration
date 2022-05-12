@@ -1,10 +1,11 @@
 
 - name: Make tempfolder
+  become: false
   local_action:
     module: ansible.builtin.tempfile
-    path: "{{ playbook_dir }}/.tmp"
     prefix: ca_crts
     state: directory
+    path: "{{lookup('config', 'DEFAULT_LOCAL_TMP')}}"
   register: ca_pubkey_folder
 - name: Distribute keys 
   block:
@@ -25,10 +26,10 @@
       module: ansible.builtin.file
       path: "{{ ca_pubkey_folder.path }}/{{ pub_key.file }}"
       state: absent
-  always:
-  - name: cleanup tempfolder
-    local_action:
-      module: ansible.builtin.file
-      path: "{{ ca_pubkey_folder.path }}"
-      state: absent
-    when: ca_pubkey_folder.path is defined
+  # always:
+  # - name: cleanup tempfolder
+  #   local_action:
+  #     module: ansible.builtin.file
+  #     path: "{{ ca_pubkey_folder.path }}"
+  #     state: absent
+  #   when: ca_pubkey_folder.path is defined
