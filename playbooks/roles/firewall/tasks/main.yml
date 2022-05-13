@@ -1,10 +1,15 @@
 ---
-# tasks file for firewall
-- name: "Make sure firewalld is enabled and running"
-  service:
-    name: firewalld
-    enabled: yes
-    state: started
+- name: init iface map
+  set_fact:
+    interface_map: {}
+- name: gather interface facts
+  set_fact: # it's nasty here but should be easier elsewhere now
+    interface_map: "{{ interface_map | combine({item.key: ansible_facts | dict2items | selectattr('value.ipv4', 'defined') | selectattr('value.ipv4.address', 'equalto', item.value | ansible.utils.ipaddr('address')) | map(attribute='key') | first }) }}"
+  with_dict: "{{int_nets | combine(public_nets)}}"
+
+- name: dbg
+  debug:
+    var: interface_map
 
 # tasks file for firewall_router
 # start service
@@ -14,67 +19,45 @@
     enabled: yes
     state: started
 
-# setup interfaces
-- name: configure wan
-  block:
-  - name: "Get device for wan network"
-    shell: "ip route | grep {{ public_nets.wan }} | sed 's/^.*dev \\([^ ]*\\).*$/\\1/g'"
-    register: dev_wan
-    changed_when: false
-  - name: "Make sure wan ip range is in appropriate zone"
-    firewalld:
-      zone: external
-      interface: "{{ dev_wan.stdout }}"
-      permanent: yes
-      immediate: yes
-      state: enabled
-    register: wan_fw
-  
-  - name: wan changed
-    debug:
-      msg: "Found wan network on device {{ dev_wan.stdout }} "
-    when: wan_fw.changed
-  when:  "(public_nets is defined) and 'wan' in public_nets"
+- name: make sure firewalld is using internal zones
+  firewalld:
+    zone: internal
+    interface: "{{ interface_map[item.key] }}"
+    permanent: yes
+    immediate: yes
+    state: enabled
+  with_dict: "{{ int_nets }}"
 
-- name: configure dmz
-  block:
-  - name: "Get device for dmz network"
-    shell: "ip route | grep {{ int_nets.dmz }} | sed 's/^.*dev \\([^ ]*\\).*$/\\1/g'"
-    register: dev_dmz
-    changed_when: false
-  - name: "Make sure dmz ip range is in appropriate zone"
-    firewalld:
-      zone: dmz
-      interface: "{{ dev_dmz.stdout }}"
-      permanent: yes
-      immediate: yes
-      state: enabled
-    register: dmz_fw
-  - name: dmz changed
-    debug:
-      msg: "Found dmz network on device {{ dev_dmz.stdout }} "
-    when: dmz_fw.changed
-  when:  "'dmz' in int_nets"
+- name: make sure firewalld is using external zones
+  firewalld:
+    zone: external
+    interface: "{{ interface_map[item.key] }}"
+    permanent: yes
+    immediate: yes
+    state: enabled
+  with_dict: "{{ public_nets }}"
 
-- name: configure lan
-  block:
-  - name: "Get device for lan network"
-    shell: "ip route | grep {{ int_nets.lan }} | sed 's/^.*dev \\([^ ]*\\).*$/\\1/g'"
-    register: dev_lan
-    changed_when: false
-  - name: "Make sure lan ip range is in appropriate zone"
-    firewalld:
-      zone: internal
-      interface: "{{ dev_lan.stdout }}"
-      permanent: yes
-      immediate: yes
-      state: enabled
-    register: lan_fw
-  - name: lan changed
-    debug:
-      msg: "Found lan network on device {{ dev_lan.stdout }} "
-    when: lan_fw.changed
-  when:  "'lan' in int_nets"
+- name: Update Network Manager so settings persist after boot
+  community.general.nmcli:
+    type: ethernet
+    conn_name: "System {{ interface_map[item.key] }}"
+    ifname: "{{ interface_map[item.key] }}"
+    dns4: "{{ groups['dns'] | map('extract',hostvars,'ip_for_dns') }}"
+    ip4: "{{ item.value }}"
+    zone: external
+    state: present
+  with_dict: "{{ public_nets }}"
+
+- name: Update Network Manager so settings persist after boot
+  community.general.nmcli:
+    type: ethernet
+    conn_name: "System {{ interface_map[item.key] }}"
+    ifname: "{{ interface_map[item.key] }}"
+    dns4: "{{ groups['dns'] | map('extract',hostvars,'ip_for_dns') }}"
+    ip4: "{{ item.value }}"
+    zone: internal
+    state: present
+  with_dict: "{{ int_nets }}"
 
 # apply rules
 - name: loop zones

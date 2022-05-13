@@ -5,8 +5,8 @@
 // See /usr/share/doc/bind*/sample/ for example named configuration files.
 //
 //
-{% for zone, ip_addr in sub_nets.items() %}
-acl {{ zone }} { {{ ip_addr }}; }; {# WARN: hardcoded 16 subnet mask and string length #}
+{% for zone, ip_addr in  int_nets.items() %}
+acl {{ zone }} { {{ ip_addr|ansible.utils.ipaddr('network') }}; };
 {% endfor %}
 options {
         listen-on port 53 { 127.0.0.1; {{ ip_for_dns }}; };
@@ -41,7 +41,7 @@ zone "lan." IN {
         type master;
         file "/var/named/lan.zone";
 };
-{% set ip_reverse = '.'.join((sub_nets.lan.split('/')[0].split('.')|reverse)[1:]) %}
+{% set ip_reverse = int_nets.lan|ansible.utils.ipaddr('network')|reverse %}
 zone "{{ip_reverse}}.in-addr.arpa." IN {
         type master;
         file "/var/named/{{ip_reverse}}.in-addr.arpa";

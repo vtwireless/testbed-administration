@@ -12,7 +12,8 @@ Dir.foreach("#{current_dir}/inventory_testing/host_vars") do |filename|
 	settings[File.basename(filename, ".yml")] = YAML.load_file("#{current_dir}/inventory_testing/host_vars/#{filename}")
 end
 $install_ansible = <<-SCRIPT
-dnf install -y ansible-core
+dnf install -y ansible-core pip
+runuser -l vagrant -c 'pip install netaddr'
 runuser -l vagrant -c 'ansible-galaxy collection install -r /vagrant/requirements.yml'
 SCRIPT
 
@@ -42,7 +43,7 @@ Vagrant.configure("2") do |config|
 			# iterate over int nets and add them
 			vm_settings["int_nets"].each do |net_name, net_ip|
 				vm_config.vm.network :private_network,
-					:ip => net_ip,
+					:ip => net_ip.split('/').first,
 					:libvirt__network_name => net_name,
 					:libvirt__dhcp_enabled => false,
 					:libvirt__forward_mode => "veryisolated",
@@ -52,7 +53,7 @@ Vagrant.configure("2") do |config|
 			# iterate over public nets and add them
 			vm_settings["public_nets"].each do |net_name, net_ip|
 				vm_config.vm.network :private_network,
-					:ip => net_ip,
+					:ip => net_ip.split('/').first,
 					:libvirt__network_name => net_name,
 					:libvirt__dhcp_enabled => false,
 					:libvirt__forward_mode => "veryisolated",
@@ -89,7 +90,6 @@ Vagrant.configure("2") do |config|
 			ansible.playbook       = "playbook.yml"
 			ansible.config_file    = "ansible_vagrant.cfg"
 			ansible.inventory_path = "inventory_testing"
-			ansible.verbose        = true
 			ansible.install        = false # currently auto install is broken with centos 9, maunually install with the above shell provision
 		end
 	end

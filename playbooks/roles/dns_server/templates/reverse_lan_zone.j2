@@ -8,7 +8,7 @@
 	3H ; I don't really understand this one 
 ) ; {# see https://www.zytrax.com/books/dns/ch8/soa.html for more info #}
 
-{% set ip_reverse = '.'.join((sub_nets.lan.split('/')[0].split('.')|reverse)[1:]) %}
+{% set ip_reverse = int_nets.lan|ansible.utils.ipaddr('network')|reverse %}
 {{ip_reverse}}.in-addr.arpa.	IN	NS	ns.lan. ; set the name server for reverse dns
 
 {# see https://philchen.com/2007/04/04/configuring-reverse-dns #}
