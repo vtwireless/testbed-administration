@@ -16,18 +16,10 @@
     group: "{{kanidm_group.gid}}"
   register: kanidm_user
 
-
-
 - name: Pull kanidm/server:latest image
   podman_image:
     name: docker.io/kanidm/server
     tag: "{% if ansible_architecture == 'x86_64' %}x86_64_{% endif %}latest"
-
-# - name: create kanidm volume
-#   containers.podman.podman_volume:
-#     state: present
-#     name: kanidmd
-#   register: kanidm_volume
 
 - name: create kanidm "volume"
   ansible.builtin.file:

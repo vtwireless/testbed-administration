@@ -33,7 +33,7 @@ AllowAgentForwarding no
 PermitRootLogin forced-commands-only
 
 # overkill encryption settings, could probably tone it down if you wanted to for compat 
-Ciphers aes256-gcm@openssh.com
+Ciphers aes256-gcm@openssh.com,aes256-ctr
 {#use sk-ssh-ed25519 for yubikeys#}
 HostKeyAlgorithms ecdsa-sha2-nistp521,ssh-ed25519,sk-ssh-ed25519-cert-v01@openssh.com{% if vagrant %},ssh-rsa{% endif %} 
 KexAlgorithms ecdh-sha2-nistp521,curve25519-sha256

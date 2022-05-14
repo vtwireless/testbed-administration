@@ -7,7 +7,7 @@
     interface_map: "{{ interface_map | combine({item.key: ansible_facts | dict2items | selectattr('value.ipv4', 'defined') | selectattr('value.ipv4.address', 'equalto', item.value | ansible.utils.ipaddr('address')) | map(attribute='key') | first }) }}"
   with_dict: "{{int_nets | combine(public_nets)}}"
 
-- name: dbg
+- name: 'Autodetected interfaces:'
   debug:
     var: interface_map
 
@@ -59,8 +59,29 @@
     state: present
   with_dict: "{{ int_nets }}"
 
-# apply rules
-- name: loop zones
+- name: Make vagrant behave with dns
+  block:
+    - name: create service file to overwrite dns
+      template:
+        src: "vagrant_resolve.service.j2"
+        dest: "/etc/systemd/system/vagrant_resolve.service"
+        mode: '0751'
+        group: root
+        owner: root 
+    - name: create script to overwrite dns (used by service file)
+      template:
+        src: "vagrant_resolve.sh.j2"
+        dest: "/usr/sbin/vagrant_resolve.sh"
+        mode: '0751'
+        group: root
+        owner: root 
+    - name: enable service file to overwrite dns
+      service:
+        name: vagrant_resolve.service
+        enabled: yes
+  when: (vagrant is defined) and vagrant
+
+- name: apply firewall rules
   include_tasks: outerLoop.yml
   loop: "{{firewall_rules | dict2items}}"
   loop_control: 

@@ -1,3 +1,0 @@
-{% for nameserver in groups['dns'] %}{# For every dns server #}
-nameserver {{ hostvars[nameserver].ip_for_dns }} 
-{% endfor %}

@@ -90,6 +90,7 @@ Vagrant.configure("2") do |config|
 			ansible.playbook       = "playbook.yml"
 			ansible.config_file    = "ansible_vagrant.cfg"
 			ansible.inventory_path = "inventory_testing"
+			ansible.verbose        = false
 			ansible.install        = false # currently auto install is broken with centos 9, maunually install with the above shell provision
 		end
 	end

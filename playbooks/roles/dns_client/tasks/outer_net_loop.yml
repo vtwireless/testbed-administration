@@ -1,4 +1,0 @@
----
-- name: who messed with my dns?!
-  include_tasks: inner_net_loop.yml
-  with_indexed_items: "{{ groups['dns'] | map('extract',hostvars,'ip_for_dns') | list }}"

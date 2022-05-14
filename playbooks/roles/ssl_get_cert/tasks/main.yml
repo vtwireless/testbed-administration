@@ -3,6 +3,7 @@
 - name: Loop over keys for signing
   block:
   - name: make tempfolder
+    become: false
     local_action:
       module: ansible.builtin.tempfile
       prefix: crts
@@ -17,11 +18,11 @@
     loop_control:
       loop_var: key
 
-  # always:
-  # - name: cleanup tempfolder
-  #   local_action:
-  #     module: ansible.builtin.file
-  #     path: "{{ crt_folder.path }}"
-  #     state: absent
-  #   changed_when: false
-  #   when: crt_folder.path is defined
+  always:
+  - name: cleanup tempfolder
+    local_action:
+      module: ansible.builtin.file
+      path: "{{ crt_folder.path }}"
+      state: absent
+    changed_when: false
+    when: crt_folder.path is defined

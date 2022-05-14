@@ -6,7 +6,7 @@
 //
 //
 {% for zone, ip_addr in  int_nets.items() %}
-acl {{ zone }} { {{ ip_addr|ansible.utils.ipaddr('network') }}; };
+acl {{ zone }} { {{ ip_addr|ansible.utils.ipaddr('subnet') }}; };
 {% endfor %}
 options {
         listen-on port 53 { 127.0.0.1; {{ ip_for_dns }}; };
@@ -15,7 +15,7 @@ options {
         dump-file       "/var/named/data/cache_dump.db";
         statistics-file "/var/named/data/named_stats.txt";
         memstatistics-file "/var/named/data/named_mem_stats.txt";
-        allow-query     { localhost; lan; dmz; };
+        allow-query     {localhost;{% for key, _ in int_nets.items() %}{{key}};{%endfor%}};
         recursion yes;
 
         dnssec-validation yes;

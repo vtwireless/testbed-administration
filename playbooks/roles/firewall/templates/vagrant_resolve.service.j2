@@ -1,0 +1,8 @@
+[Unit]
+Description=overwrite vagrant's attempts at changing dns
+
+[Service]
+ExecStart=/bin/sh /usr/sbin/vagrant_resolve.sh
+
+[Install]
+WantedBy=multi-user.target

@@ -13,4 +13,7 @@
     name: '{{ item[ansible_os_family] | default(item.default)  }}'
     state: latest
   with_items: '{{ packages }}'
-  notify: reboot system
+
+- name: reboot system
+  reboot:
+  when: (reboot_after_install is defined) and reboot_after_install
