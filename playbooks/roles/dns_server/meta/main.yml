@@ -54,7 +54,7 @@ dependencies:
       - name: bind utils (dig)
         default: bind-utils
         RedHat: bind-utils
-  - role: firewall
+  - role: base_network
     vars:
       firewall_rules:
         internal:

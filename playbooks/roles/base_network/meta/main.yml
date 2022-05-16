@@ -1,15 +1,15 @@
 galaxy_info:
   author: Matthew Salerno
   description: >
-    This manages a firewall using firewalld. Takes a dictionary of firewall rules to apply. 
-    These are expected to be provided by roles in their `meta/main.yml` file. Ansible will
-    flatten them into a single dictionary for you. An example:
+    Sets up the network configuration, which consists of a firewall, and DNS client behavior.
+    Takes a dictionary of firewall rules to apply as an argument. 
+    These are expected to be provided by roles in their `meta/main.yml` files. An example:
     ```yaml
     firewall_rules:
       internal:
       - name: my_awesome_minecraft_server
         port: '25565/tcp'
-      - name: dns 
+      - name: nameserver 
         service: dns
       dmz:
       - name: my_custom_server

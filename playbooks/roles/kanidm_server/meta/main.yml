@@ -52,7 +52,7 @@ dependencies:
       - name: podman
         default: podman
         RedHat:  podman
-  - role: firewall
+  - role: base_network
     vars:
       firewall_rules:
         internal:

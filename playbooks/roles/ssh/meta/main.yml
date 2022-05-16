@@ -53,7 +53,7 @@ galaxy_info:
 
 dependencies: 
   - role: kanidm_client
-  - role: firewall
+  - role: base_network
     vars:
       firewall_rules:
         internal:

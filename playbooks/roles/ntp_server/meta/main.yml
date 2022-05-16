@@ -48,7 +48,7 @@ dependencies:
       - name: chronyd
         default: chrony
         RedHat:  chrony
-  - role: firewall
+  - role: base_network
     vars:
       firewall_rules:
         internal:
