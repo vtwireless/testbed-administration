@@ -1,10 +1,11 @@
 
 - name: Make tempfolder
+  become: false
   local_action:
     module: ansible.builtin.tempfile
-    path: "{{ playbook_dir }}/.tmp"
     prefix: ca_crts
     state: directory
+    path: "{{lookup('config', 'DEFAULT_LOCAL_TMP')}}"
   register: ca_pubkey_folder
 - name: Distribute keys 
   block:

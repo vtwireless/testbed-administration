@@ -1,0 +1,7 @@
+#! /bin/sh
+# forces resolv.conf to be set properly when running vagrant (which tries to take over)
+while true
+do
+	cp -f /etc/resolv.conf.override /etc/resolv.conf
+	sleep 5
+done

@@ -1,0 +1,4 @@
+# Generrated by a script that fights vagrant in setting the dns server, I would welcome a better way - mattjs
+{% for dns in groups['dns'] | map('extract',hostvars,'ip_for_dns') | list %}
+nameserver {{dns}}
+{%endfor%}

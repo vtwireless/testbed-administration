@@ -3,3 +3,5 @@ roles: []
 collections:
   - name: ansible.posix
   - name: containers.podman
+  - name: community.general
+  - name: ansible.utils

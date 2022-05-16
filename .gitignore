@@ -5,3 +5,4 @@ password.txt
 inventory_production/
 */.tmp/
 .generated_docs/
+playbooks/keys/*

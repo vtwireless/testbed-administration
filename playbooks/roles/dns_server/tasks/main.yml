@@ -1,15 +1,5 @@
 ---
 # tasks file for dns
-- name: "Make sure bind is installed"
-  dnf:
-    name: bind
-    state: present
-    
-- name: "Make sure bind-utils is installed for debugging dns"
-  dnf:
-    name: bind-utils
-    state: present
-
 - name: Update named.conf
   template:
     src: named.conf.j2
@@ -31,7 +21,7 @@
 - name: Update reverse lan.zone
   template:
     src: reverse_lan_zone.j2
-    dest: "{% set ip_reverse = '.'.join((sub_nets.lan.split('/')[0].split('.')|reverse)[1:]) %}/var/named/{{ip_reverse}}.in-addr.arpa"
+    dest: "/var/named/{{ int_nets.lan|ansible.utils.ipaddr('network')|reverse }}.in-addr.arpa"
     owner: named
     group: named
     mode: '0600'
@@ -42,12 +32,3 @@
     name: named
     enabled: yes
     state: started
-    
-# firewall rules
-- name: "Let dns queries through"
-  firewalld:
-    zone: internal
-    service: dns
-    permanent: yes
-    immediate: yes
-    state: enabled

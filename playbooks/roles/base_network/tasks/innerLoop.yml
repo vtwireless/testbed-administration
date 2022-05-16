@@ -1,0 +1,16 @@
+- name: add services
+  firewalld:
+    zone: "{{zone.key}}"
+    service: "{{item.service}}"
+    permanent: yes
+    immediate: yes
+    state: "{{item.state}}"
+  when: item.service is defined
+- name: add ports
+  firewalld:
+    zone: "{{zone.key}}"
+    port: "{{item.port}}"
+    permanent: yes
+    immediate: yes
+    state: "{{item.state}}"
+  when: item.port is defined

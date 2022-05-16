@@ -8,12 +8,3 @@
     group: root
     mode: 0644
   notify: Restart chronyd
-
-# firewall rules
-- name: "Let ntp queries through"
-  firewalld:
-    zone: internal
-    service: ntp
-    permanent: yes
-    immediate: yes
-    state: enabled

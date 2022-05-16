@@ -1,11 +1,5 @@
 ---
 # tasks file for kanidm
-- name: Install podman
-  dnf:
-    name: podman
-    state: latest
-
-
 - name: create kanidm group
   group:
     name: kanidm
@@ -19,54 +13,54 @@
     state: present
     system: yes
     create_home: no
-    group: kanidm
+    group: "{{kanidm_group.gid}}"
   register: kanidm_user
-
-
 
 - name: Pull kanidm/server:latest image
   podman_image:
     name: docker.io/kanidm/server
     tag: "{% if ansible_architecture == 'x86_64' %}x86_64_{% endif %}latest"
 
-# - name: create kanidm volume
-#   containers.podman.podman_volume:
-#     state: present
-#     name: kanidmd
-#   register: kanidm_volume
-
 - name: create kanidm "volume"
   ansible.builtin.file:
     state: directory
-    path: "/var/kanidm"
-    owner: kanidm
-    group: kanidm
+    path: "/var/db/kanidm"
+    owner: root
+    group: "{{kanidm_group.gid}}"
     mode: '0770'
+
+- name: create kanidm db folder
+  ansible.builtin.file:
+    state: directory
+    path: "/var/db/kanidm/db"
+    owner: "{{kanidm_user.uid}}"
+    group: "{{kanidm_group.gid}}"
+    mode: '0750'
 
 - name: Copy kanidm key into volume
   copy:
     src: "/certs/key.pem"
-    dest: "/var/kanidm/key.pem"
+    dest: "/var/db/kanidm/key.pem"
     remote_src: yes
 
 - name: Change kanidm key owners and mode
   file:
-    path: "/var/kanidm/key.pem"
+    path: "/var/db/kanidm/key.pem"
     owner: root
-    group: kanidm
+    group: "{{kanidm_group.gid}}"
     mode: '0640'
 
 - name: Copy kanidm chain into volume
   copy:
     src: "/certs/chain.pem"
-    dest: "/var/kanidm/chain.pem"
+    dest: "/var/db/kanidm/chain.pem"
     remote_src: yes
 
 - name: Change kanidm chain owners and mode
   ansible.builtin.file:
-    path: "/var/kanidm/chain.pem"
+    path: "/var/db/kanidm/chain.pem"
     owner: root
-    group: kanidm
+    group: "{{kanidm_group.gid}}"
     mode: '0640'
 
 - name: Make configuration file, perform initial setup if needed
@@ -81,7 +75,7 @@
     ports:
       - "{{ kanidm_port }}:{{ kanidm_port }}"
     volume:
-      - "/var/kanidm:/data"
+      - "/var/db/kanidm:/data"
     generate_systemd:
       path: /etc/systemd/system/
       restart_policy: on-failure
@@ -90,4 +84,5 @@
 - name: Make sure kanidm is running
   service:
     name: container-kanidm-main.service
+    enabled: yes
     state: started

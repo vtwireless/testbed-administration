@@ -3,11 +3,12 @@
 - name: Loop over keys for signing
   block:
   - name: make tempfolder
+    become: false
     local_action:
       module: ansible.builtin.tempfile
       prefix: crts
       state: directory
-      path: "{{ playbook_dir }}/.tmp"
+      path: "{{lookup('config', 'DEFAULT_LOCAL_TMP')}}"
     changed_when: false
     register: crt_folder
 

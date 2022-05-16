@@ -1,0 +1,10 @@
+[Unit]
+Description=overwrite vagrant's attempts at changing dns
+
+[Service]
+Type=simple
+ExecStart=/bin/sh /usr/sbin/vagrant_resolve.sh
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

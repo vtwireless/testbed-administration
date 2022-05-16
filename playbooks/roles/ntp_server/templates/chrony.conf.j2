@@ -1,6 +1,5 @@
 pool {{ ntp.pool }} iburst maxsources 4
-allow {{ sub_nets.lan }}
-allow {{ sub_nets.dmz }}
+allow {{ int_nets.lan|ansible.utils.ipaddr("subnet") }}
 bindaddress {{ ip_for_dns }}
 driftfile /var/lib/chrony/drift
 makestep 10 3
