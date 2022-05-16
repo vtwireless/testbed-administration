@@ -1,1 +1,3 @@
-name server {{ ip_for_dns }}
+{% for dns in groups['dns'] | map('extract',hostvars,'ip_for_dns') | list %}
+nameserver {{dns}}
+{%endfor%}

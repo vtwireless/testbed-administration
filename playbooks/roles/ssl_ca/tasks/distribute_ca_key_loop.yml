@@ -4,8 +4,6 @@
     src: "{{ ca_pubkey_folder.path }}/{{ pub_key.file }}"
     dest: "/etc/pki/ca-trust/source/anchors/{{ pub_key.file }}"
     mode: '644'
-    owner: root
-    group: root
   delegate_to: "{{ client }}"
 - name: "update ca"
   command:

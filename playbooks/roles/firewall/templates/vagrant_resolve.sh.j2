@@ -1,7 +1,7 @@
 #! /bin/sh
 # forces resolv.conf to be set properly when running vagrant (which tries to take over)
-sleep 5
-echo "# generated to overwrite vagrant" > /etc/resolv.conf
-{% for dns in groups['dns'] | map('extract',hostvars,'ip_for_dns') | list %}
-echo nameserver {{dns}} >> /etc/resolv.conf
-{%endfor%}
+while true
+do
+	cp -f /etc/resolv.conf.override /etc/resolv.conf
+	sleep 5
+done

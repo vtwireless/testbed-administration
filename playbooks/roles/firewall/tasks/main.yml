@@ -59,6 +59,9 @@
     state: present
   with_dict: "{{ int_nets }}"
 
+# The following block is really nasty, but vagrant seems to have hardcoded into
+# it something that adds the builtin DHCP server's DNS into the top of
+# resolv.conf on boot, thus breaking local DNS - mattjs
 - name: Make vagrant behave with dns
   block:
     - name: create service file to overwrite dns
@@ -75,10 +78,24 @@
         mode: '0751'
         group: root
         owner: root 
-    - name: enable service file to overwrite dns
+    - name: create resolv reference file (used by service)
+      template:
+        src: "resolv.conf.override.j2"
+        dest: "/etc/resolv.conf.override"
+        mode: '0644'
+        group: root
+        owner: root 
+    - name: enable service file to overwrite dns (dns host)
       service:
         name: vagrant_resolve.service
         enabled: yes
+      when: ("dns" in group_names)
+    - name: enable service file to overwrite dns (dns client)
+      service:
+        name: vagrant_resolve.service
+        enabled: yes
+        state: started
+      when: ("dns" not in group_names)
   when: (vagrant is defined) and vagrant
 
 - name: apply firewall rules
