@@ -56,8 +56,7 @@ Vagrant.configure("2") do |config|
 					:ip => net_ip.split('/').first,
 					:libvirt__network_name => net_name,
 					:libvirt__dhcp_enabled => false,
-					:libvirt__forward_mode => "veryisolated",
-					:virtualbox__intnet => true,
+					:libvirt__forward_mode => "open",
 					:name => net_name
 			end
 			# set up the net that the ansible vm will use ( only for when testing in vagrant )

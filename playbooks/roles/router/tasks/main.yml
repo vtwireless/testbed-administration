@@ -1,2 +1,8 @@
 ---
 # tasks file for firewall_router
+- name: Make sure routing is enabled
+  lineinfile:
+    path: /etc/sysctl.conf
+    regexp: '^net.ipv4.ip_forward='
+    line: net.ipv4.ip_forward=1
+  notify: apply sysctl changes

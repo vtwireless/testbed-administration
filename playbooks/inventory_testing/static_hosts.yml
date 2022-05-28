@@ -25,3 +25,7 @@ ca:
 kanidm:
   hosts:
     infra-2:
+
+vpn:
+  hosts:
+    gateway:
