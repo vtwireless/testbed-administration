@@ -1,2 +1,5 @@
 ---
 # handlers file for firewall_router
+- name: apply sysctl changes
+  command:
+    cmd: sysctl -p

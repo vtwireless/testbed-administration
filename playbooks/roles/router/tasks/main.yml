@@ -1,2 +1,80 @@
 ---
 # tasks file for firewall_router
+- name: "Make sure firewalld is enabled and running"
+  service:
+    name: firewalld
+    enabled: yes
+    state: started
+
+- name: make sure firewalld is using external zones
+  firewalld:
+    zone: external # yes, external is what we want here as it is preconfigured with masquerading
+    interface: "{{ interface_map[item.key] }}"
+    permanent: yes
+    immediate: yes
+    state: enabled
+  with_dict: "{{ int_nets }}"
+
+- name: make sure firewalld is using external zones
+  firewalld:
+    zone: public
+    interface: "{{ interface_map[item.key] }}"
+    permanent: yes
+    immediate: yes
+    state: enabled
+  with_dict: "{{ public_nets }}"
+  
+- name: Make sure routing is enabled
+  lineinfile:
+    path: /etc/sysctl.conf
+    regexp: '^net.ipv4.ip_forward='
+    line: net.ipv4.ip_forward=1
+  notify: apply sysctl changes
+
+- name: disable public ssh
+  firewalld:
+    zone: public
+    service: ssh
+    permanent: yes
+    immediate: yes
+    state: disabled
+
+- name: disable public cockpit
+  firewalld:
+    zone: public
+    service: cockpit
+    permanent: yes
+    immediate: yes
+    state: disabled
+
+- name: enable public wireguard
+  firewalld:
+    zone: public
+    service: wireguard
+    permanent: yes
+    immediate: yes
+    state: enabled
+
+- name: enable external (lan) ntp
+  firewalld:
+    zone: external
+    service: ntp
+    permanent: yes
+    immediate: yes
+    state: enabled
+
+- name: enable external (lan) ssh
+  firewalld:
+    zone: external
+    service: ssh
+    permanent: yes
+    immediate: yes
+    state: enabled
+
+- name: enable external (lan) dns
+  firewalld:
+    zone: external
+    service: dns
+    permanent: yes
+    immediate: yes
+    state: enabled

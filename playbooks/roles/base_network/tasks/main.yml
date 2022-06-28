@@ -11,32 +11,6 @@
   debug:
     var: interface_map
 
-# tasks file for firewall_router
-# start service
-- name: "Make sure firewalld is enabled and running"
-  service:
-    name: firewalld
-    enabled: yes
-    state: started
-
-- name: make sure firewalld is using internal zones
-  firewalld:
-    zone: internal
-    interface: "{{ interface_map[item.key] }}"
-    permanent: yes
-    immediate: yes
-    state: enabled
-  with_dict: "{{ int_nets }}"
-
-- name: make sure firewalld is using external zones
-  firewalld:
-    zone: external
-    interface: "{{ interface_map[item.key] }}"
-    permanent: yes
-    immediate: yes
-    state: enabled
-  with_dict: "{{ public_nets }}"
-
 - name: Update Network Manager so settings persist after boot
   community.general.nmcli:
     type: ethernet
@@ -44,7 +18,7 @@
     ifname: "{{ interface_map[item.key] }}"
     dns4: "{{ groups['dns'] | map('extract',hostvars,'ip_for_dns') }}"
     ip4: "{{ item.value }}"
-    zone: external
+    zone: public
     state: present
   with_dict: "{{ public_nets }}"
 
@@ -55,7 +29,7 @@
     ifname: "{{ interface_map[item.key] }}"
     dns4: "{{ groups['dns'] | map('extract',hostvars,'ip_for_dns') }}"
     ip4: "{{ item.value }}"
-    zone: internal
+    zone: external
     state: present
   with_dict: "{{ int_nets }}"
 
@@ -97,10 +71,3 @@
         state: started
       when: ("dns" not in group_names)
   when: (vagrant is defined) and vagrant
-
-- name: apply firewall rules
-  include_tasks: outerLoop.yml
-  loop: "{{firewall_rules | dict2items}}"
-  loop_control: 
-    loop_var: zone
-  when: firewall_rules is defined

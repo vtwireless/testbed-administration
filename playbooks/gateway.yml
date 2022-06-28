@@ -7,4 +7,5 @@
     - ntp_server
     - ssl_ca
     - ssh
+    - vpn
     - kanidm_client

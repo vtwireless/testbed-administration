@@ -1,2 +1,6 @@
 ---
 # handlers file for vpn
+- name: restart vpn
+  systemd:
+    name: wg-quick@wireless-vt
+    state: restarted

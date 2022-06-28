@@ -1,0 +1,24 @@
+{# 
+ # https://www.tangramvision.com/blog/what-they-dont-tell-you-about-setting-up-a-wireguard-vpn
+ # https://www.smarthomebeginner.com/linux-wireguard-vpn-server-setup/
+ #}
+[Interface]
+Address = {{ wiregaurd.address }}
+ListenPort = {{ wiregaurd.port }}
+PrivateKey = {{ wiregaurd.privkey }}
+SaveConfig = True
+
+{% for client in wiregaurd.clients %}
+[peer]
+PublicKey = {{client.pub_key}}
+AllowedIPs = 172.16.0.0/13
+{#
+ # From https://www.ipvoid.com/ipv4-cidr-calculator/
+ # 172.16.0.0/13 allows us to partition our net further, allowing some networks (24-31) to remain 'hidden'
+ # Start IP: 172.16.0.0
+ # End IP: 172.23.255.255
+ # Number of IPs: 524,288
+ # Subnet Range: 255.248.0.0
+ # Wildcard: 0.7.255.255
+ #}
+{% endfor %}

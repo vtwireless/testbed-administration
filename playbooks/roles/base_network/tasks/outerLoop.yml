@@ -1,3 +1,0 @@
-- name: loop rules
-  include_tasks: innerLoop.yml
-  loop: "{{zone.value}}"

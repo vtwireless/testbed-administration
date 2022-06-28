@@ -1,2 +1,44 @@
 ---
+# https://www.tangramvision.com/blog/exploring-ansible-via-setting-up-a-wireguard-vpn#wireguard-server-setup  
 # tasks file for vpn
+- name: declare dmz range 
+  firewalld:
+    zone: external
+    interface: "wireless-vt"
+    permanent: yes
+    immediate: yes
+    state: enabled
+
+# - name: enable comms from vpn to lan
+#   firewalld:
+#     zone: external
+#     rich_rule: rule family="ipv4" source address="{{ wiregaurd.address | ansible.utils.ipaddr('subnet')}}" masquerade
+#     permanent: yes
+#     immediate: yes
+#     state: enabled
+    
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/copy_module.html
+- name: create server wireguard config
+  template:
+    dest: /etc/wireguard/wireless-vt.conf
+    src: wireless-vt.conf.j2
+    owner: root
+    group: root
+    mode: '0600'
+  notify: restart vpn
+
+# https://docs.ansible.com/ansible/latest/collections/ansible/posix/sysctl_module.html
+- name: enable and persist ip forwarding
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: "1"
+    state: present
+    sysctl_set: yes
+    reload: yes
+
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/systemd_module.html
+- name: start wireguard and enable on boot
+  systemd:
+    name: wg-quick@wireless-vt
+    enabled: yes
+    state: started

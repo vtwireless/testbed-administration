@@ -1,20 +1,7 @@
 galaxy_info:
   author: Matthew Salerno
   description: >
-    Sets up the network configuration, which consists of a firewall, and DNS client behavior.
-    Takes a dictionary of firewall rules to apply as an argument. 
-    These are expected to be provided by roles in their `meta/main.yml` files. An example:
-    ```yaml
-    firewall_rules:
-      internal:
-      - name: my_awesome_minecraft_server
-        port: '25565/tcp'
-      - name: nameserver 
-        service: dns
-      dmz:
-      - name: my_custom_server
-        port: '25555/udp'
-    ```
+    Sets up the network configuration - network manager and DNS client behavior.
   company: vtwireless
 
   # If the issue tracker for your role is not on github, uncomment the
@@ -58,9 +45,6 @@ dependencies:
   - role: packages
     vars:
       packages:
-      - name: firewall
-        default: firewalld
-        RedHat:  firewalld
       - name: Network Manager
         default: network-manager
         Debian: network-manager

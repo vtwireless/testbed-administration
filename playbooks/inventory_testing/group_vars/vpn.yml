@@ -1,0 +1,10 @@
+---
+wiregaurd:
+  address: 172.23.0.1/16
+  port:    51820
+  privkey: "cOC9EKyUzislDFC3Hl/zOjgACS0OMW9b0T+xCxYko2c=" #! change this, in production, this *MUST* be secured with ansible vault
+  pubkey:  "H0Tme2vehkRdP6hsZqjKgtFiWnFw1yGifVbPjRFmizg=" #! change this
+  clients:
+  - name: test # for reference only
+    pub_key:  "TLSpI9g1QX5XqiqiDII1fq+UWAbc0jKEOjO39C6gG1M="
+    priv_key: "0LkNGPGUsjxZKoDQ1cC7ZUIjujOrEg5oz/CjVAQB+ms=" #! DO NOT USE PRIV KEY! This is for testing __ONLY__!
