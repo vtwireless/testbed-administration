@@ -1,22 +1,22 @@
 ---
 # https://www.tangramvision.com/blog/exploring-ansible-via-setting-up-a-wireguard-vpn#wireguard-server-setup  
 # tasks file for vpn
-- name: enable masquarading from vpn to lan
+- name: declare dmz range 
   firewalld:
-    zone: dmz
-    source: "{{ wiregaurd.address | ansible.utils.ipaddr('subnet')}}"
-    permanent: yes
-    immediate: yes
-    state: enabled
-    
-- name: enable masquerading from vpn to lan
-  firewalld:
-    zone: dmz
-    masquerade: yes
+    zone: external
+    interface: "wireless-vt"
     permanent: yes
     immediate: yes
     state: enabled
 
+# - name: enable comms from vpn to lan
+#   firewalld:
+#     zone: external
+#     rich_rule: rule family="ipv4" source address="{{ wiregaurd.address | ansible.utils.ipaddr('subnet')}}" masquerade
+#     permanent: yes
+#     immediate: yes
+#     state: enabled
+    
 # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/copy_module.html
 - name: create server wireguard config
   template:
